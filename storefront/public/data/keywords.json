@@ -1,0 +1,51 @@
+{
+  "common_keys": [
+    "neon sign",
+    "custom neon sign",
+    "led neon sign",
+    "neon light",
+    "neon signs for business",
+    "neon sign for room",
+    "personalized neon sign",
+    "neon wall art"
+  ],
+  "business": {
+    "business": [
+      "business neon sign",
+      "open neon sign",
+      "storefront neon sign",
+      "shop window neon light",
+      "custom business neon sign"
+    ],
+    "bar": [
+      "bar neon sign",
+      "cocktail neon sign",
+      "happy hour neon sign",
+      "lounge neon light",
+      "neon sign for bar and events"
+    ],
+    "custom": [
+      "custom neon sign",
+      "logo neon sign",
+      "personalized name neon sign",
+      "custom logo neon light",
+      "made to order neon sign"
+    ]
+  },
+  "home": {
+    "home": [
+      "neon sign for home",
+      "bedroom neon sign",
+      "home decor neon light",
+      "neon sign for room",
+      "aesthetic neon wall art"
+    ],
+    "quotes": [
+      "quote neon sign",
+      "good vibes only neon sign",
+      "motivational neon sign",
+      "word neon light",
+      "phrase neon sign for wall"
+    ]
+  }
+}

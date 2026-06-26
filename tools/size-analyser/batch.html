@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Batch Size Generator</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0a0a10; color: #d8d8e8; font-size: 14px; min-height: 100vh;
+}
+.header {
+  background: #10101a; border-bottom: 1px solid #1e1e30;
+  padding: 1rem 1.5rem; display: flex; align-items: center; gap: 12px;
+}
+.header-dot { width: 24px; height: 24px; border-radius: 50%; background: #f7b731; box-shadow: 0 0 14px #f7b73188; flex-shrink: 0; }
+.header h1 { font-size: 0.95rem; font-weight: 600; color: #fff; }
+.header p  { font-size: 0.72rem; color: #555; margin-top: 2px; }
+
+.layout { display: grid; grid-template-columns: 380px 1fr; min-height: calc(100vh - 56px); }
+
+/* ── Left panel ── */
+.panel-left {
+  background: #10101a; border-right: 1px solid #1e1e30;
+  display: flex; flex-direction: column;
+}
+.panel-toolbar {
+  padding: 0.9rem 1rem; border-bottom: 1px solid #1e1e30;
+  display: flex; align-items: center; gap: 8px;
+}
+.label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: #555; }
+.check-all { accent-color: #f7b731; width: 15px; height: 15px; cursor: pointer; }
+.count-badge {
+  margin-left: auto; background: #1e1e30; border-radius: 20px;
+  padding: 2px 10px; font-size: 0.72rem; color: #666;
+}
+.product-list { flex: 1; overflow-y: auto; padding: 6px; }
+.product-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 8px; cursor: pointer;
+  transition: background .15s; border: 1px solid transparent;
+  margin-bottom: 4px;
+}
+.product-item:hover { background: #14141e; }
+.product-item.selected { background: #13130a; border-color: #3a2a08; }
+.product-item input[type=checkbox] { accent-color: #f7b731; flex-shrink: 0; }
+.product-thumb {
+  width: 52px; height: 38px; object-fit: cover; border-radius: 4px;
+  background: #0d0d18; flex-shrink: 0;
+}
+.product-thumb-placeholder {
+  width: 52px; height: 38px; border-radius: 4px; background: #0d0d18; flex-shrink: 0;
+}
+.product-info { flex: 1; min-width: 0; }
+.product-name { font-size: 0.78rem; font-weight: 600; color: #ccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.product-slug { font-size: 0.68rem; color: #444; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.product-thresh { font-size: 0.68rem; color: #f7b731; background: #1a1408; padding: 1px 7px; border-radius: 10px; white-space: nowrap; }
+.sizes-badge { font-size: 0.68rem; color: #7ddd50; background: #0d1a0d; padding: 1px 7px; border-radius: 10px; white-space: nowrap; }
+
+.panel-footer {
+  padding: 1rem; border-top: 1px solid #1e1e30;
+}
+.btn-run {
+  width: 100%; padding: 0.75rem; background: #f7b731; color: #0a0a10;
+  font-weight: 700; font-size: 0.9rem; border: none; border-radius: 10px;
+  cursor: pointer; transition: opacity .2s;
+}
+.btn-run:hover { opacity: .88; }
+.btn-run:disabled { opacity: .3; cursor: not-allowed; }
+
+/* ── Right panel ── */
+.panel-right { padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; }
+
+.empty-right {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: .75rem; opacity: .3;
+}
+.empty-right .big { font-size: 3rem; }
+.empty-right p { font-size: .85rem; color: #555; }
+
+/* Progress */
+.progress-header { display: flex; align-items: center; gap: 10px; }
+.progress-header h2 { font-size: .9rem; font-weight: 600; color: #fff; }
+.progress-sub { font-size: .72rem; color: #555; margin-top: 2px; }
+
+.job-list { display: flex; flex-direction: column; gap: 8px; }
+.job-card {
+  background: #10101a; border: 1px solid #1e1e30; border-radius: 10px;
+  padding: .85rem 1rem;
+}
+.job-card.done  { border-color: #1a3010; }
+.job-card.error { border-color: #3a1010; }
+
+.job-top { display: flex; align-items: center; gap: 10px; }
+.job-name { font-size: .8rem; font-weight: 600; color: #bbb; flex: 1; }
+.job-status { font-size: .72rem; }
+.job-status.pending { color: #444; }
+.job-status.running { color: #f7b731; }
+.job-status.done    { color: #7ddd50; }
+.job-status.error   { color: #e05050; }
+
+.job-bar-wrap { margin-top: 8px; height: 3px; background: #1e1e30; border-radius: 2px; }
+.job-bar { height: 100%; border-radius: 2px; background: #f7b731; transition: width .3s; }
+.job-card.done  .job-bar { background: #7ddd50; }
+.job-card.error .job-bar { background: #e05050; }
+
+.job-detail { font-size: .68rem; color: #444; margin-top: 5px; }
+
+.summary-card {
+  background: #0d1a0d; border: 1px solid #1a3010; border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+.summary-card h3 { font-size: .85rem; font-weight: 600; color: #7ddd50; margin-bottom: 6px; }
+.summary-row { font-size: .75rem; color: #888; line-height: 1.9; }
+.summary-row span { color: #ccc; }
+
+.loader-inline { display: inline-block; width: 12px; height: 12px; border: 2px solid #333; border-top-color: #f7b731; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 4px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Preview grid ── */
+.preview-header { display: flex; flex-direction: column; gap: 3px; }
+.preview-header h2 { font-size: .9rem; font-weight: 600; color: #fff; }
+.preview-sub { font-size: .72rem; color: #555; }
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+}
+.viz-card {
+  background: #10101a; border: 1px solid #1e1e30; border-radius: 8px;
+  padding: 6px; text-align: center;
+}
+.viz-card.ok    { border-color: #1a2a10; }
+.viz-card.error { border-color: #3a1010; }
+.viz-label { font-size: .65rem; color: #555; margin-bottom: 4px; font-weight: 600; }
+.viz-dim   { font-size: .62rem; color: #444; margin-top: 3px; }
+.viz-card img { width: 100%; border-radius: 3px; display: block; background: #fff; }
+.viz-placeholder {
+  width: 100%; height: 72px; background: #0d0d18; border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .62rem; color: #444;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-dot"></div>
+  <div>
+    <h1>Batch Size Generator</h1>
+    <p>Batch size generation for products · Directus + n8n</p>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- ── Left: product list ── -->
+  <aside class="panel-left">
+    <div class="panel-toolbar">
+      <input type="checkbox" class="check-all" id="checkAll" onchange="toggleAll(this.checked)">
+      <span class="label">Select all</span>
+      <span class="count-badge" id="countBadge">loading…</span>
+    </div>
+    <div class="panel-toolbar" style="border-top:none;padding-top:0;gap:6px">
+      <input type="checkbox" id="filterDone" class="check-all" checked onchange="loadProducts()">
+      <span class="label" style="font-size:.65rem">hide ones with up-to-date threshold</span>
+    </div>
+    <div class="panel-toolbar" style="border-top:none;padding-top:0;gap:6px">
+      <input type="checkbox" id="filterHasSizes" class="check-all" onchange="loadProducts()">
+      <span class="label" style="font-size:.65rem">hide ones with sizes</span>
+    </div>
+    <div class="product-list" id="productList">
+      <div style="padding:2rem;text-align:center;color:#333;font-size:.8rem">
+        <div class="loader-inline"></div> Loading products…
+      </div>
+    </div>
+    <div class="panel-footer">
+      <button class="btn-run" id="btnRun" disabled onclick="runBatch()">
+        Start generation →
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Right: progress / results ── -->
+  <main class="panel-right" id="panelRight">
+    <div class="empty-right" id="emptyRight">
+      <div class="big">⚙️</div>
+      <p>Select products and click "Start generation"</p>
+    </div>
+  </main>
+
+</div>
+
+<script>
+const PRODUCTS_URL = 'https://n8n.example.com/webhook/neon/products/website';
+const SAVE_URL     = '/proxy/save-sizes';
+const UPLOAD_URL   = '/upload-viz';
+const BACKGROUND_SAVE_CONCURRENCY = 2;
+const VIZ_UPLOAD_RETRIES = 3;
+const COMPACT_SIDE_CM = 55;
+const BASE_CONFIGS = [
+  { tube_mm: 6, adjustment: -2   },
+  { tube_mm: 6, adjustment: -1.5 },
+  { tube_mm: 6, adjustment: -1   },
+  { tube_mm: 6, adjustment: -0.5 },
+  { tube_mm: 6, adjustment:  0   },
+  { tube_mm: 6, adjustment: +0.5 },
+  { tube_mm: 6, adjustment: +1   },
+  { tube_mm: 6, adjustment: +2   },
+  { tube_mm: 8, adjustment: -3   },
+  { tube_mm: 8, adjustment: -2.5 },
+  { tube_mm: 8, adjustment: -2   },
+  { tube_mm: 8, adjustment: -1   },
+  { tube_mm: 8, adjustment: -0.5 },
+  { tube_mm: 8, adjustment:  0   },
+  { tube_mm: 8, adjustment: +0.5 },
+  { tube_mm: 8, adjustment: +1   },
+  { tube_mm: 8, adjustment: +2   },
+];
+const COMPACT_EXTRA_CONFIGS = [
+  { tube_mm: 6, adjustment: -3   },
+  { tube_mm: 6, adjustment: -2.5 },
+  { tube_mm: 8, adjustment: -4   },
+  { tube_mm: 8, adjustment: -3.5 },
+];
+
+let groups      = []; // one entry per group_id
+let selected    = new Set(); // set of group_id strings
+let batchRunning = false;
+
+function isCompactSign(widthCm, heightCm) {
+  return Number.isFinite(widthCm) && Number.isFinite(heightCm) &&
+    (widthCm <= COMPACT_SIDE_CM || heightCm <= COMPACT_SIDE_CM);
+}
+
+function sortConfigs(configs) {
+  return [...configs].sort((a, b) => (a.tube_mm - b.tube_mm) || (a.adjustment - b.adjustment));
+}
+
+function mergeUniqueConfigs(...groups) {
+  const seen = new Set();
+  const merged = [];
+  for (const cfg of groups.flat()) {
+    const key = `${cfg.tube_mm}:${cfg.adjustment}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(cfg);
+  }
+  return sortConfigs(merged);
+}
+
+function getConfigsForDimensions(widthCm, heightCm) {
+  return isCompactSign(widthCm, heightCm)
+    ? mergeUniqueConfigs(BASE_CONFIGS, COMPACT_EXTRA_CONFIGS)
+    : BASE_CONFIGS;
+}
+
+function createLimiter(maxConcurrent) {
+  let active = 0;
+  const queue = [];
+
+  const runNext = () => {
+    if (active >= maxConcurrent || queue.length === 0) return;
+    const { task, resolve, reject } = queue.shift();
+    active++;
+    Promise.resolve()
+      .then(task)
+      .then(resolve, reject)
+      .finally(() => {
+        active--;
+        runNext();
+      });
+  };
+
+  return (task) => new Promise((resolve, reject) => {
+    queue.push({ task, resolve, reject });
+    runNext();
+  });
+}
+
+async function uploadVizPreview(vizBase64) {
+  let lastError = new Error('Failed to load preview');
+
+  for (let attempt = 1; attempt <= VIZ_UPLOAD_RETRIES; attempt++) {
+    try {
+      const blob = await (await fetch('data:image/webp;base64,' + vizBase64)).blob();
+      const form = new FormData();
+      form.append('image', blob, 'viz.webp');
+
+      const up = await fetch(UPLOAD_URL, { method: 'POST', body: form });
+      const upd = await up.json();
+
+      if (!up.ok || !upd.ok || !upd.url) {
+        throw new Error(upd.error || `upload-viz ${up.status}`);
+      }
+
+      return upd.url;
+    } catch (err) {
+      lastError = err instanceof Error ? err : new Error(String(err));
+      if (attempt < VIZ_UPLOAD_RETRIES) {
+        await new Promise(resolve => setTimeout(resolve, attempt * 400));
+      }
+    }
+  }
+
+  throw lastError;
+}
+
+async function persistGroupSizes(group, results) {
+  const sizesJson = await Promise.all(
+    results.map(async ({ cfg, d }) => {
+      let sizePreview = null;
+      if (d.ok && d.vizBase64) {
+        sizePreview = await uploadVizPreview(d.vizBase64);
+      }
+      return {
+        size_preview:        sizePreview,
+        tube_mm:             cfg.tube_mm,
+        adjustment:          cfg.adjustment,
+        width_cm:            d.ok ? d.signWidthCm  : null,
+        height_cm:           d.ok ? d.signHeightCm : null,
+        led_length_m:        d.ok ? d.lengthM       : null,
+        power_w:             d.ok ? d.powerW        : null,
+        area_m2:             d.ok ? +((d.signWidthMm / 1000) * (d.signHeightMm / 1000)).toFixed(4) : null,
+        used_otsu_threshold: d.ok ? d.threshold     : null,
+      };
+    })
+  );
+
+  const saveRes = await fetch(SAVE_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      group_id:   group.group_id,
+      slug:       group.slug,
+      sizes_json: sizesJson,
+    }),
+  });
+
+  if (!saveRes.ok) throw new Error(`n8n responded ${saveRes.status}`);
+  return sizesJson;
+}
+
+async function analyzeConfigSet(imageUrl, absThresh, pricePerM, configs, bar, progressBase = 0, progressSpan = 70) {
+  return Promise.all(
+    configs.map(async (cfg, i) => {
+      const res = await fetch('/analyze-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageUrl,
+          tubeWidthMm:       cfg.tube_mm,
+          thicknessAdjust:   cfg.adjustment,
+          absoluteThreshold: absThresh,
+          pricePerMeter:     pricePerM,
+          markup:            0,
+        }),
+      });
+      const d = await res.json();
+      if (configs.length > 0) {
+        const progress = progressBase + Math.round(((i + 1) / configs.length) * progressSpan);
+        bar.style.width = `${progress}%`;
+      }
+      return { cfg, d };
+    })
+  );
+}
+
+// ── Load products ────────────────────────────────────────────────────
+async function loadProducts() {
+  try {
+    const res  = await fetch(PRODUCTS_URL);
+    const json = await res.json();
+    const all  = Array.isArray(json) ? json : (json.products ?? Object.values(json)[0] ?? []);
+
+    // Deduplicate by group_id — one representative per group
+    // Representative = first product in the group that has a valid otsu_threshold
+    const seen = new Map(); // group_id → group object
+    for (const p of all) {
+      const gid = p.group_id;
+      if (gid == null) continue;
+      const t = p.otsu_threshold;
+      const validT = t !== null && t !== '' && t !== 0;
+      // Parse sizes_json — may come as string or array
+      let sizesArr = null;
+      if (p.sizes_json) {
+        try { sizesArr = typeof p.sizes_json === 'string' ? JSON.parse(p.sizes_json) : p.sizes_json; } catch {}
+      }
+      const sizesThresh = Array.isArray(sizesArr) && sizesArr.length > 0
+        ? (sizesArr[0].used_otsu_threshold ?? null) : null;
+
+      if (!seen.has(gid)) {
+        seen.set(gid, { group_id: gid, name: p.name, slug: p.slug, images: p.images, otsu_threshold: validT ? t : null, price_per_10cm: p.price_per_10cm, sizesThresh, sizesArr });
+      } else {
+        const g = seen.get(gid);
+        if (!g.otsu_threshold && validT) g.otsu_threshold = t;
+        if (sizesThresh !== null) { g.sizesThresh = sizesThresh; g.sizesArr = sizesArr; }
+      }
+    }
+
+    const filterDone     = document.getElementById('filterDone')?.checked ?? true;
+    const filterHasSizes = document.getElementById('filterHasSizes')?.checked ?? false;
+    groups = [...seen.values()].filter(g => {
+      if (g.otsu_threshold == null) return false;
+      if (filterDone && g.sizesThresh !== null && Number(g.sizesThresh) === Number(g.otsu_threshold)) return false;
+      if (filterHasSizes && Array.isArray(g.sizesArr) && g.sizesArr.length > 0) return false;
+      return true;
+    });
+
+    renderList();
+  } catch (e) {
+    document.getElementById('productList').innerHTML =
+      `<div style="padding:1rem;color:#e05050;font-size:.8rem">Load error: ${e.message}</div>`;
+  }
+}
+
+function renderList() {
+  const list = document.getElementById('productList');
+  document.getElementById('countBadge').textContent = `${groups.length} groups`;
+
+  if (!groups.length) {
+    list.innerHTML = '<div style="padding:1rem;color:#444;font-size:.8rem">No groups found</div>';
+    return;
+  }
+
+  list.innerHTML = '';
+  groups.forEach(g => {
+    const div = document.createElement('div');
+    div.className = 'product-item';
+    div.dataset.gid = g.group_id;
+
+    const thumb = g.images?.[0]
+      ? `<img class="product-thumb" src="${g.images[0]}" loading="lazy" onerror="this.style.display='none'">`
+      : `<div class="product-thumb-placeholder"></div>`;
+
+    const hasSizes = Array.isArray(g.sizesArr) && g.sizesArr.length > 0;
+    const sizesBadge = hasSizes
+      ? `<span class="sizes-badge" title="threshold in sizes: ${g.sizesThresh}">✓ ${g.sizesArr.length}</span>`
+      : '';
+    div.innerHTML = `
+      <input type="checkbox" value="${g.group_id}" onchange="onCheck(event)">
+      ${thumb}
+      <div class="product-info">
+        <div class="product-name">${g.name}</div>
+        <div class="product-slug">${g.slug}</div>
+      </div>
+      ${sizesBadge}
+      <span class="product-thresh">threshold ${g.otsu_threshold}</span>
+    `;
+    div.addEventListener('click', e => {
+      if (e.target.tagName === 'INPUT') return;
+      const cb = div.querySelector('input[type=checkbox]');
+      cb.checked = !cb.checked;
+      cb.dispatchEvent(new Event('change'));
+    });
+    list.appendChild(div);
+  });
+}
+
+function onCheck(e) {
+  const gid = e.target.value;
+  e.target.checked ? selected.add(gid) : selected.delete(gid);
+  document.querySelector(`.product-item[data-gid="${gid}"]`)
+    .classList.toggle('selected', e.target.checked);
+  document.getElementById('btnRun').disabled = selected.size === 0;
+  document.getElementById('checkAll').indeterminate = selected.size > 0 && selected.size < groups.length;
+  document.getElementById('checkAll').checked = selected.size === groups.length;
+
+  if (e.target.checked && !batchRunning) {
+    const group = groups.find(g => String(g.group_id) === gid);
+    if (group) previewGroup(group);
+  }
+}
+
+// ── Preview all configs for a group ──────────────────────────────────
+function previewGroup(group) {
+  const right = document.getElementById('panelRight');
+  const sizes = group.sizesArr;
+
+  if (!Array.isArray(sizes) || sizes.length === 0) {
+    right.innerHTML = `
+      <div class="preview-header">
+        <h2>${group.name}</h2>
+        <div class="preview-sub" style="color:#e05050">No saved sizes</div>
+      </div>
+    `;
+    return;
+  }
+
+  right.innerHTML = `
+    <div class="preview-header">
+      <h2>${group.name}</h2>
+      <div class="preview-sub">group ${group.group_id} · threshold ${group.otsu_threshold} · ${sizes.length} configurations</div>
+    </div>
+    <div class="preview-grid" id="previewGrid"></div>
+  `;
+
+  const grid = document.getElementById('previewGrid');
+
+  sizes.forEach(s => {
+    const sign  = s.adjustment >= 0 ? '+' : '';
+    const label = `${s.tube_mm}mm ${sign}${s.adjustment}`;
+    const dim   = (s.width_cm && s.height_cm) ? `${s.width_cm}×${s.height_cm} cm · ${s.led_length_m}m` : '';
+    const card  = document.createElement('div');
+    card.className = 'viz-card' + (s.size_preview ? ' ok' : '');
+    card.innerHTML = s.size_preview
+      ? `<div class="viz-label">${label}</div>
+         <img src="${s.size_preview}" alt="${label}" loading="lazy">
+         <div class="viz-dim">${dim}</div>`
+      : `<div class="viz-label">${label}</div>
+         <div class="viz-placeholder">no photo</div>
+         <div class="viz-dim">${dim}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+function toggleAll(checked) {
+  groups.forEach(g => {
+    selected[checked ? 'add' : 'delete'](String(g.group_id));
+    const item = document.querySelector(`.product-item[data-gid="${g.group_id}"]`);
+    if (item) {
+      item.querySelector('input').checked = checked;
+      item.classList.toggle('selected', checked);
+    }
+  });
+  document.getElementById('btnRun').disabled = selected.size === 0;
+}
+
+// ── Run batch ────────────────────────────────────────────────────────
+async function runBatch() {
+  const toProcess = groups.filter(g => selected.has(String(g.group_id)));
+  if (!toProcess.length) return;
+
+  batchRunning = true;
+  document.getElementById('btnRun').disabled = true;
+  const emptyRight = document.getElementById('emptyRight');
+  if (emptyRight) emptyRight.style.display = 'none';
+
+  const right = document.getElementById('panelRight');
+  right.innerHTML = `
+    <div class="progress-header">
+      <div>
+        <h2>Size generation</h2>
+        <div class="progress-sub" id="progressSub">0 / ${toProcess.length} groups</div>
+      </div>
+    </div>
+    <div class="job-list" id="jobList"></div>
+    <div id="summaryWrap"></div>
+  `;
+
+  const jobList = document.getElementById('jobList');
+
+  // Create job cards keyed by group_id
+  const cards = {};
+  toProcess.forEach(g => {
+    const key  = String(g.group_id);
+    const card = document.createElement('div');
+    card.className = 'job-card';
+    card.id = `job-${key}`;
+    card.innerHTML = `
+      <div class="job-top">
+        <div class="job-name">${g.name}</div>
+        <div class="job-status pending" id="status-${key}">pending</div>
+      </div>
+      <div class="job-bar-wrap"><div class="job-bar" id="bar-${key}" style="width:0%"></div></div>
+      <div class="job-detail" id="detail-${key}">${g.slug}</div>
+    `;
+    jobList.appendChild(card);
+    cards[key] = card;
+  });
+
+  let analyzed = 0, done = 0, errors = 0;
+  const saveInBackground = createLimiter(BACKGROUND_SAVE_CONCURRENCY);
+  const backgroundTasks = [];
+
+  const updateProgress = () => {
+    document.getElementById('progressSub').textContent =
+      `computed: ${analyzed} / ${toProcess.length} · saved: ${done} · errors: ${errors}`;
+  };
+
+  for (const group of toProcess) {
+    const key    = String(group.group_id);
+    const card   = cards[key];
+    const status = document.getElementById(`status-${key}`);
+    const bar    = document.getElementById(`bar-${key}`);
+    const detail = document.getElementById(`detail-${key}`);
+
+    status.className = 'job-status running';
+    status.innerHTML = '<span class="loader-inline"></span>analyzing…';
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    try {
+      const imageUrl  = group.images?.[0];
+      if (!imageUrl) throw new Error('No image');
+      const absThresh = group.otsu_threshold;
+      const pricePerM = group.price_per_10cm ? group.price_per_10cm * 10 : 13900;
+
+      const baseResults = await analyzeConfigSet(imageUrl, absThresh, pricePerM, BASE_CONFIGS, bar, 0, 55);
+      const compactResult = baseResults.find(({ d }) => d.ok && isCompactSign(d.signWidthCm, d.signHeightCm));
+      const extraConfigs = compactResult ? COMPACT_EXTRA_CONFIGS : [];
+      const extraResults = extraConfigs.length
+        ? await analyzeConfigSet(imageUrl, absThresh, pricePerM, extraConfigs, bar, 55, 15)
+        : [];
+      const results = mergeUniqueConfigs(
+        baseResults.map(({ cfg }) => cfg),
+        extraResults.map(({ cfg }) => cfg)
+      ).map((cfg) => (
+        baseResults.find((item) => item.cfg.tube_mm === cfg.tube_mm && item.cfg.adjustment === cfg.adjustment) ||
+        extraResults.find((item) => item.cfg.tube_mm === cfg.tube_mm && item.cfg.adjustment === cfg.adjustment)
+      ));
+
+      analyzed++;
+      bar.style.width = '72%';
+      status.className = 'job-status running';
+      status.innerHTML = '<span class="loader-inline"></span>saving in background…';
+      detail.textContent = 'Computation done, sending in background';
+      updateProgress();
+
+      backgroundTasks.push(
+        saveInBackground(async () => {
+          detail.textContent = 'Uploading visualizations…';
+          bar.style.width = '84%';
+          const sizesJson = await persistGroupSizes(group, results);
+          bar.style.width = '100%';
+          card.classList.add('done');
+          status.className = 'job-status done';
+          status.textContent = '✓ done';
+          detail.textContent = `${sizesJson.length} configurations saved`;
+          done++;
+          updateProgress();
+        }).catch((e) => {
+          card.classList.add('error');
+          status.className = 'job-status error';
+          status.textContent = '✗ error';
+          detail.textContent = e.message;
+          bar.style.width = '100%';
+          errors++;
+          updateProgress();
+        })
+      );
+
+    } catch (e) {
+      analyzed++;
+      card.classList.add('error');
+      status.className = 'job-status error';
+      status.textContent = '✗ error';
+      document.getElementById(`detail-${key}`).textContent = e.message;
+      bar.style.width = '100%';
+      errors++;
+      updateProgress();
+    }
+  }
+
+  await Promise.all(backgroundTasks);
+
+  // Summary
+  document.getElementById('summaryWrap').innerHTML = `
+    <div class="summary-card">
+      <h3>Generation complete</h3>
+      <div class="summary-row">
+        Processed: <span>${toProcess.length}</span> groups ·
+        Succeeded: <span style="color:#7ddd50">${done}</span> ·
+        Failed: <span style="color:${errors > 0 ? '#e05050' : '#888'}">${errors}</span>
+      </div>
+    </div>
+  `;
+
+  batchRunning = false;
+  document.getElementById('btnRun').disabled = false;
+}
+
+loadProducts();
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="180" viewBox="0 0 640 180" fill="none">
+  <defs>
+    <mask id="hubCutout">
+      <rect width="640" height="180" fill="black"/>
+      <rect x="392" y="30" width="210" height="120" rx="18" fill="white"/>
+      <text
+        x="497"
+        y="114"
+        text-anchor="middle"
+        font-family="Arial Black, Arial, Helvetica, sans-serif"
+        font-size="64"
+        font-weight="900"
+        letter-spacing="4"
+        fill="black"
+      >HUB</text>
+    </mask>
+  </defs>
+
+  <g opacity="0.035">
+    <text
+      x="24"
+      y="120"
+      font-family="Arial Black, Arial, Helvetica, sans-serif"
+      font-size="92"
+      font-weight="900"
+      letter-spacing="6"
+      fill="#CFCFCF"
+    >NEON</text>
+    <rect x="392" y="30" width="210" height="120" rx="18" fill="#9A9A9A" mask="url(#hubCutout)"/>
+  </g>
+
+  <text
+    x="24"
+    y="120"
+    font-family="Arial Black, Arial, Helvetica, sans-serif"
+    font-size="92"
+    font-weight="900"
+    letter-spacing="6"
+    fill="#B8B8B8"
+    opacity="0.0525"
+  >NEON</text>
+  <rect x="392" y="30" width="210" height="120" rx="18" fill="#858585" opacity="0.0525" mask="url(#hubCutout)"/>
+</svg>

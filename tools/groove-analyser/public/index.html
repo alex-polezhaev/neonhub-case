@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Groove Analyzer</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23111'/%3E%3Crect x='4' y='13' width='24' height='6' rx='3' fill='%23333'/%3E%3Crect x='4' y='14' width='24' height='4' rx='2' fill='%2300e5ff' opacity='.9'/%3E%3Crect x='4' y='14' width='24' height='4' rx='2' fill='%2300e5ff' filter='url(%23g)'/%3E%3Cdefs%3E%3Cfilter id='g' x='-50%25' y='-200%25' width='200%25' height='500%25'%3E%3CfeGaussianBlur stdDeviation='2' result='blur'/%3E%3C/filter%3E%3C/defs%3E%3Cline x1='10' y1='10' x2='10' y2='22' stroke='white' stroke-width='1.5' opacity='.7'/%3E%3Cline x1='16' y1='10' x2='16' y2='22' stroke='white' stroke-width='1.5' opacity='.7'/%3E%3Cline x1='22' y1='10' x2='22' y2='22' stroke='white' stroke-width='1.5' opacity='.7'/%3E%3C/svg%3E">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      background: #1a1f26;
+      color: #d0dae6;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      font-size: 12px;
+    }
+
+    /* ── Header ── */
+    header {
+      height: 42px;
+      background: #111620;
+      border-bottom: 1px solid #252e3a;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    header h1 { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #4a5a6a; cursor: pointer; }
+    header h1:hover { color: #90a0b0; }
+    .hsep { width: 1px; height: 18px; background: #252e3a; margin: 0 2px; }
+    button {
+      padding: 4px 10px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      border: 1px solid #252e3a;
+      cursor: pointer;
+      background: transparent;
+      color: #6a7a8a;
+      transition: all 0.1s;
+    }
+    button.primary { background: #1565c0; color: #fff; border-color: #1976d2; }
+    button.primary:hover { background: #1976d2; }
+    button.primary:disabled { background: #1e2530; color: #3a4a5a; border-color: transparent; cursor: default; }
+    button.tog { }
+    button.tog.on { background: #152030; color: #82b1ff; border-color: #2979ff55; }
+    button.tog:hover { color: #90b8ff; }
+
+    /* view tabs */
+    .tab { border-radius: 4px; }
+    .tab.active { background: #202830; color: #c8d8e8; border-color: #344050; }
+
+    #status { font-size: 11px; color: #3a4a5a; }
+    #zoom-disp { margin-left: auto; font-size: 11px; color: #3a5a7a; min-width: 48px; text-align: right; }
+
+    /* ── Main layout ── */
+    .workspace { display: flex; flex: 1; overflow: hidden; }
+
+    /* ── Views ── */
+    #views { flex: 1; position: relative; overflow: hidden; }
+
+    /* Layout view */
+    #view-layout {
+      position: absolute; inset: 0;
+      background: #f8f9fa;
+      overflow: hidden;
+    }
+    /* grid overlay */
+    #view-layout::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(#e0e5ea 1px, transparent 1px),
+        linear-gradient(90deg, #e0e5ea 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    #canvas-root {
+      position: absolute;
+      top: 0; left: 0;
+      transform-origin: 0 0;
+      will-change: transform;
+      z-index: 1;
+    }
+    #canvas-root svg { display: block; overflow: visible; }
+
+    #drop-hint {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px; color: #a0b0c0; pointer-events: none;
+    }
+    #drop-hint .icon { font-size: 32px; color: #c0ccd8; }
+    #drop-hint p { font-size: 13px; }
+    #drop-hint small { font-size: 11px; color: #b0c0d0; }
+
+    /* zoom controls */
+    .zoom-ctrls {
+      position: absolute; bottom: 14px; right: 14px;
+      display: flex; flex-direction: column; gap: 3px; z-index: 5;
+    }
+    .zbtn {
+      width: 28px; height: 28px;
+      background: #111620; border: 1px solid #252e3a;
+      color: #5a7a9a; font-size: 14px; border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; user-select: none;
+    }
+    .zbtn:hover { background: #1a2330; color: #90b8ff; }
+
+    /* ruler */
+    #ruler {
+      position: absolute; bottom: 14px; left: 14px;
+      background: rgba(17,22,32,0.88);
+      border: 1px solid #252e3a;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 10px; color: #5a9adf;
+      display: none; align-items: center; gap: 6px; z-index: 5;
+    }
+    #ruler-bar { height: 3px; background: #2979ff; border-radius: 2px; min-width: 10px; }
+
+    /* Power view */
+    #view-power {
+      position: absolute; inset: 0;
+      background: #111820;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #power-canvas {
+      flex: 1;
+      overflow: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .pc-header {
+      font-size: 10px; color: #3a5a7a;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      border-bottom: 1px solid #1e2a38;
+      padding-bottom: 8px;
+      margin-bottom: 4px;
+    }
+    .pc-stats {
+      display: flex; gap: 20px; flex-wrap: wrap;
+    }
+    .pc-stat { font-size: 11px; color: #6a8aaa; }
+    .pc-stat strong { color: #82b1ff; }
+
+    /* Power chain diagram */
+    #chain-diagram {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0;
+      padding: 16px 0;
+    }
+    .chain-node {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      cursor: pointer;
+    }
+    .chain-bubble {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: #ffd740;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700;
+      color: #111; line-height: 1.2;
+      border: 2px solid #111820;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .chain-node:hover .chain-bubble { transform: scale(1.1); box-shadow: 0 0 12px rgba(255,215,64,0.4); }
+    .chain-node.active .chain-bubble { box-shadow: 0 0 0 3px #ffd740, 0 0 20px rgba(255,215,64,0.5); }
+    .chain-node-label { font-size: 10px; color: #5a7a9a; }
+    .chain-arrow {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0 4px; color: #ffd74060;
+    }
+    .chain-arrow .arrow-line {
+      width: 40px; height: 2px; background: #ffd74040;
+      position: relative;
+    }
+    .chain-arrow .arrow-line::after {
+      content: '▶';
+      position: absolute; right: -8px; top: -6px;
+      color: #ffd74060; font-size: 10px;
+    }
+    .chain-arrow .arrow-dist { font-size: 10px; color: #5a7a9a; margin-top: 3px; }
+
+    .swatch { width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s,transform .15s;flex-shrink:0; }
+    .swatch:hover { transform:scale(1.2); }
+    .swatch.active { border-color:#fff; }
+
+    /* Power overlay on layout */
+    .pw-link {
+      stroke: #111;
+      stroke-width: 4px;
+      fill: none;
+      opacity: 0.9;
+      vector-effect: non-scaling-stroke;
+    }
+    .pw-link.direct { /* dasharray set in JS with uu() */ }
+    .pw-link-glow {
+      stroke: rgba(0,0,0,0.2);
+      stroke-width: 10px;
+      fill: none;
+      vector-effect: non-scaling-stroke;
+    }
+    .pw-port {
+      fill: #111820;
+      stroke: #ffd740;
+      stroke-width: 2px;
+      vector-effect: non-scaling-stroke;
+    }
+    .pw-lead {
+      stroke: #ffd740;
+      stroke-width: 2px;
+      fill: none;
+      opacity: 0.95;
+      vector-effect: non-scaling-stroke;
+    }
+    .pw-badge {
+      fill: #ffd740;
+      stroke: #111820;
+      stroke-width: 1.5px;
+      vector-effect: non-scaling-stroke;
+    }
+    .pw-badge-text {
+      fill: #111820;
+      font-weight: 700;
+      pointer-events: none;
+    }
+    .pw-label-bg {
+      fill: rgba(17, 24, 32, 0.92);
+      stroke: rgba(255, 215, 64, 0.35);
+      stroke-width: 0.5;
+    }
+    .pw-label {
+      fill: #ffe082;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .wire-chip { display:inline-block; background:#1e2a38; border:1px solid #2d4a6a; color:#82b1ff;
+      font-size:10px; font-weight:700; padding:1px 5px; border-radius:3px; margin:1px 2px 1px 0; }
+    .arrow-wires { display:flex; flex-wrap:wrap; justify-content:center; gap:2px; margin-top:3px; }
+
+    /* Power groove table */
+    .pc-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .pc-table th { text-align: left; padding: 5px 10px; font-size: 10px; color: #3a5a7a; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #1e2a38; }
+    .pc-table td { padding: 6px 10px; border-bottom: 1px solid #141c28; color: #8a9aaa; vertical-align: middle; }
+    .pc-table tr:hover td { background: #141c28; }
+    .pc-table tr.active td { background: #0d1929; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+    /* ── Panel ── */
+    .panel {
+      width: 230px; flex-shrink: 0;
+      background: #111620;
+      border-left: 1px solid #1e2a38;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .pb { padding: 10px 12px; border-bottom: 1px solid #1a2230; flex-shrink: 0; }
+    .pb h2 { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: #3a5a7a; margin-bottom: 6px; }
+    .row { display: flex; justify-content: space-between; padding: 2px 0; color: #5a7a9a; }
+    .row .v { color: #82b1ff; font-weight: 600; }
+
+    #focus { background: #0d1420; border-radius: 6px; padding: 8px; margin-top: 6px; }
+    #focus .fl { font-size: 9px; color: #3a5a7a; letter-spacing: 1px; text-transform: uppercase; }
+    #focus .fn { font-size: 14px; color: #c8d8e8; margin: 3px 0; }
+    #focus .fm { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 8px; font-size: 10px; color: #5a7a9a; }
+    #focus .fm strong { display: block; font-size: 11px; color: #82b1ff; }
+
+    #groove-list { flex: 1; overflow-y: auto; padding: 6px; display: flex; flex-direction: column; gap: 4px; }
+    .gc {
+      padding: 7px 9px; border-radius: 5px;
+      border: 1px solid #1e2a38; background: #0d1420;
+      cursor: pointer; transition: border-color 0.1s;
+    }
+    .gc:hover { border-color: #2e3e50; }
+    .gc.active { border-color: #2979ff; background: #0d1929; }
+    .gc .gi { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .gc .gr { display: flex; gap: 8px; color: #5a7a9a; }
+    .gc .gv { color: #82b1ff; font-weight: 600; }
+    .gc .gs { font-size: 10px; color: #3a5a7a; margin-top: 2px; }
+
+    .cut-row { display: flex; align-items: center; gap: 6px; padding: 3px 0; border-bottom: 1px solid #141c28; color: #5a7a9a; }
+    .cut-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .cut-v { color: #00e676; font-weight: 700; margin-left: auto; }
+    #cut-total { font-size: 11px; color: #82b1ff; margin-top: 6px; font-weight: 600; }
+
+    #file-input { display: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1 id="title">Groove Analyzer</h1>
+  <div class="hsep"></div>
+  <button class="primary" id="analyze-btn" disabled>Analyze</button>
+  <div class="hsep"></div>
+  <button class="tab active" id="tab-layout">Layout</button>
+  <button class="tab" id="tab-power">Power chain</button>
+  <div class="hsep"></div>
+  <button class="tog on" id="tog-orig">Source</button>
+  <button class="tog on" id="tog-skel">Grooves</button>
+  <button class="tog on" id="tog-power">Power</button>
+  <div class="hsep"></div>
+  <span id="status">Drop SVG to begin</span>
+  <span id="zoom-disp">—</span>
+</header>
+
+<div class="workspace">
+  <div id="views">
+
+    <!-- Layout view -->
+    <div id="view-layout">
+      <div id="canvas-root"></div>
+      <div id="drop-hint">
+        <div class="icon">⬡</div>
+        <p>Drop CorelDRAW SVG here</p>
+        <small>or click title to browse</small>
+      </div>
+      <div class="zoom-ctrls">
+        <div class="zbtn" id="zoom-in">+</div>
+        <div class="zbtn" id="zoom-fit">⊡</div>
+        <div class="zbtn" id="zoom-out">−</div>
+      </div>
+      <div id="ruler"><div id="ruler-bar"></div><span id="ruler-lbl"></span></div>
+    </div>
+
+    <!-- Power view -->
+    <div id="view-power">
+      <div id="power-canvas">
+        <div>
+          <div class="pc-header">Power chain plan</div>
+          <div class="pc-stats" id="pc-stats"></div>
+        </div>
+        <div id="chain-diagram"></div>
+        <div>
+          <div class="pc-header" style="margin-bottom:10px">Connection sequence</div>
+          <table class="pc-table">
+            <thead><tr>
+              <th>#</th><th>Groove</th><th>Side</th><th>Next →</th><th>Wires</th>
+            </tr></thead>
+            <tbody id="pc-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Panel -->
+  <div class="panel">
+    <div class="pb">
+      <h2>Document</h2>
+      <div class="row"><span>Width</span><span class="v" id="i-w">—</span></div>
+      <div class="row"><span>Height</span><span class="v" id="i-h">—</span></div>
+      <div class="row"><span>Grooves</span><span class="v" id="i-count">—</span></div>
+      <div class="row"><span>Total length</span><span class="v" id="i-total">—</span></div>
+      <div class="row"><span>Power (9.6W/m)</span><span class="v" id="i-watts">—</span></div>
+      <div class="row"><span>Current 12V</span><span class="v" id="i-amps12">—</span></div>
+      <div class="row"><span>Current 24V</span><span class="v" id="i-amps24">—</span></div>
+      <div class="row"><span>Strip width</span><span class="v" id="i-gw">—</span></div>
+      <div id="focus">
+        <div class="fl">Focus</div>
+        <div class="fn" id="fn">—</div>
+        <div class="fm">
+          <div>Length<strong id="fl">—</strong></div>
+          <div>Width<strong id="fw">—</strong></div>
+          <div>LEDs<strong id="fle">—</strong></div>
+          <div>Strip<strong id="fs">—</strong></div>
+        </div>
+        <div id="focus-color" style="display:none;margin-top:8px">
+          <div class="fl" style="margin-bottom:4px">Strip color</div>
+          <div id="color-swatches" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+          <div id="focus-color-label" style="font-size:10px;color:#82b1ff;margin-top:4px;min-height:14px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="pb" style="padding-bottom:2px"><h2>Grooves</h2></div>
+    <div id="groove-list"></div>
+    <div class="pb" id="cut-block" style="display:none">
+      <h2>Cut list</h2>
+      <div id="cut-rows"></div>
+      <div id="cut-total"></div>
+    </div>
+  </div>
+</div>
+<input type="file" id="file-input" accept=".svg,image/svg+xml">
+
+<script>
+const COLORS = ['#2979ff','#00e676','#ff6d00','#d500f9','#ffea00','#00b0ff','#ff4081','#76ff03'];
+
+const LED_COLORS = [
+  { name: 'Cyan',       hex: '#00CFFF' },
+  { name: 'Yellow',        hex: '#FFE600' },
+  { name: 'Green',       hex: '#00D84A' },
+  { name: 'Red',       hex: '#FF2222' },
+  { name: 'Orange',     hex: '#FF7700' },
+  { name: 'Pink',       hex: '#FF5FA0' },
+  { name: 'Blue',         hex: '#2255FF' },
+  { name: 'Warm White',  hex: '#FFE8B0' },
+  { name: 'Cool White',hex: '#F0F8FF' },
+  { name: 'Purple',    hex: '#AA00FF' },
+];
+
+// ── LocalStorage helpers ──
+const LS_FILE    = 'ga-file';
+const LS_COLORS  = 'ga-groove-colors';
+let currentFileName = '';
+
+function lsSaveFile(name, text) {
+  try { localStorage.setItem(LS_FILE, JSON.stringify({ name, text })); } catch {}
+}
+function lsLoadFile() {
+  try { const v = localStorage.getItem(LS_FILE); return v ? JSON.parse(v) : null; } catch { return null; }
+}
+function lsSaveColor(fileName, grooveId, colorName) {
+  try {
+    const all = JSON.parse(localStorage.getItem(LS_COLORS) || '{}');
+    if (!all[fileName]) all[fileName] = {};
+    all[fileName][grooveId] = colorName;
+    localStorage.setItem(LS_COLORS, JSON.stringify(all));
+  } catch {}
+}
+function lsGetColors(fileName) {
+  try { const all = JSON.parse(localStorage.getItem(LS_COLORS) || '{}'); return all[fileName] || {}; } catch { return {}; }
+}
+
+// ── Color swatch UI ──
+function buildSwatches() {
+  const container = document.getElementById('color-swatches');
+  container.innerHTML = '';
+  LED_COLORS.forEach(c => {
+    const s = document.createElement('div');
+    s.className = 'swatch';
+    s.title = c.name;
+    s.style.background = c.hex;
+    s.dataset.colorName = c.name;
+    s.addEventListener('click', () => {
+      if (activeIdx === null || !analysisData) return;
+      const gid = analysisData.grooves[activeIdx]?.id;
+      lsSaveColor(currentFileName, gid, c.name);
+      updateSwatchActive(c.name);
+      document.getElementById('focus-color-label').textContent = c.name;
+    });
+    container.appendChild(s);
+  });
+}
+
+function updateSwatchActive(colorName) {
+  document.querySelectorAll('.swatch').forEach(s =>
+    s.classList.toggle('active', s.dataset.colorName === colorName));
+}
+
+buildSwatches();
+
+let currentFile = null, analysisData = null, activeIdx = null;
+let selectedIndices = new Set();
+let svgEl = null, mmPerUnit = 1;
+let tx = 0, ty = 0, sc = 1;
+const MIN_SC = 0.002, MAX_SC = 60;
+
+// ── Views ──
+const viewLayout = document.getElementById('view-layout');
+const viewPower  = document.getElementById('view-power');
+const tabLayout  = document.getElementById('tab-layout');
+const tabPower   = document.getElementById('tab-power');
+
+tabLayout.addEventListener('click', () => switchView('layout'));
+tabPower.addEventListener('click',  () => switchView('power'));
+
+function switchView(v) {
+  viewLayout.style.display = v === 'layout' ? 'block' : 'none';
+  viewPower.style.display  = v === 'power'  ? 'flex'  : 'none';
+  tabLayout.classList.toggle('active', v === 'layout');
+  tabPower.classList.toggle('active',  v === 'power');
+}
+switchView('layout');
+
+// ── Zoom ──
+const canvasRoot = document.getElementById('canvas-root');
+const zoomDisp   = document.getElementById('zoom-disp');
+
+function applyT() {
+  canvasRoot.style.transform = `translate(${tx}px,${ty}px) scale(${sc})`;
+  zoomDisp.textContent = Math.round(sc * 100) + '%';
+  updateRuler();
+}
+
+function zoomAt(cx, cy, f) {
+  const ns = Math.min(MAX_SC, Math.max(MIN_SC, sc * f));
+  tx = cx - (cx - tx) * (ns / sc);
+  ty = cy - (cy - ty) * (ns / sc);
+  sc = ns; applyT();
+}
+
+function fitView() {
+  if (!svgEl) return;
+  const vb = svgEl.viewBox.baseVal;
+  if (!vb || !vb.width) return;
+  const vp = viewLayout.getBoundingClientRect();
+  const pad = 40;
+  const s = Math.min((vp.width - pad*2) / vb.width, (vp.height - pad*2) / vb.height);
+  sc = s;
+  tx = (vp.width  - vb.width  * s) / 2;
+  ty = (vp.height - vb.height * s) / 2;
+  applyT();
+}
+
+viewLayout.addEventListener('wheel', e => {
+  e.preventDefault();
+  const r = viewLayout.getBoundingClientRect();
+  zoomAt(e.clientX - r.left, e.clientY - r.top, e.deltaY < 0 ? 1.12 : 1/1.12);
+}, { passive: false });
+
+let drag = false, dx0 = 0, dy0 = 0;
+viewLayout.addEventListener('mousedown', e => { if (e.button) return; drag = true; dx0 = e.clientX - tx; dy0 = e.clientY - ty; viewLayout.style.cursor = 'grabbing'; });
+window.addEventListener('mousemove', e => { if (!drag) return; tx = e.clientX - dx0; ty = e.clientY - dy0; applyT(); });
+window.addEventListener('mouseup', () => { drag = false; viewLayout.style.cursor = ''; });
+
+document.getElementById('zoom-in').addEventListener('click', () => { const r = viewLayout.getBoundingClientRect(); zoomAt(r.width/2, r.height/2, 1.5); });
+document.getElementById('zoom-out').addEventListener('click', () => { const r = viewLayout.getBoundingClientRect(); zoomAt(r.width/2, r.height/2, 1/1.5); });
+document.getElementById('zoom-fit').addEventListener('click', fitView);
+
+function updateRuler() {
+  const ruler = document.getElementById('ruler');
+  if (!analysisData) return;
+  ruler.style.display = 'flex';
+  const mmPx = 1 / (sc / mmPerUnit);  // mm per screen pixel (wrong direction)
+  // screen pixel → SVG unit → mm
+  const svgUnitPerPx = 1 / sc;
+  const mmPerPx = svgUnitPerPx * mmPerUnit;
+  const targetPx = 80;
+  const mmTarget = targetPx * mmPerPx;
+  const nice = [1,2,5,10,20,50,100,200,500,1000];
+  const chosen = nice.find(v => v >= mmTarget * 0.5) || nice[nice.length-1];
+  const barPx = chosen / mmPerPx;
+  document.getElementById('ruler-bar').style.width = Math.min(barPx, 200) + 'px';
+  document.getElementById('ruler-lbl').textContent = chosen + ' mm';
+}
+
+// ── File ──
+viewLayout.addEventListener('dragover', e => e.preventDefault());
+viewLayout.addEventListener('drop', e => { e.preventDefault(); loadFile(e.dataTransfer.files[0]); });
+viewLayout.addEventListener('click', e => { if (!svgEl && !drag) fileInput.click(); });
+document.getElementById('title').addEventListener('click', () => fileInput.click());
+document.getElementById('file-input').addEventListener('change', function() { loadFile(this.files[0]); });
+
+function loadFile(file) {
+  if (!file) return;
+  currentFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    currentFileName = file.name;
+    lsSaveFile(file.name, e.target.result);
+    buildSVG(e.target.result);
+    document.getElementById('analyze-btn').disabled = false;
+    setStatus(file.name);
+  };
+  reader.readAsText(file);
+}
+
+// Restore saved file on page load
+(function restoreFile() {
+  const saved = lsLoadFile();
+  if (!saved) return;
+  currentFileName = saved.name;
+  buildSVG(saved.text);
+  document.getElementById('analyze-btn').disabled = false;
+  setStatus(saved.name + ' (restored)');
+})();
+
+function buildSVG(text) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, 'image/svg+xml');
+  svgEl = doc.documentElement;
+
+  // Ensure viewBox
+  let vbStr = svgEl.getAttribute('viewBox');
+  if (!vbStr) {
+    const w = parseFloat(svgEl.getAttribute('width')) || 800;
+    const h = parseFloat(svgEl.getAttribute('height')) || 600;
+    vbStr = `0 0 ${w} ${h}`;
+    svgEl.setAttribute('viewBox', vbStr);
+  }
+  const [,, vbW, vbH] = vbStr.split(/\s+/).map(Number);
+
+  // Set explicit pixel size = viewBox units (1:1), zoom handles scale
+  svgEl.setAttribute('width',  vbW);
+  svgEl.setAttribute('height', vbH);
+  svgEl.id = 'main-svg';
+
+  // Original content → faded group
+  const orig = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  orig.id = 'orig-layer';
+  orig.setAttribute('opacity', '0.18');
+  orig.style.filter = 'saturate(0)';
+  while (svgEl.firstChild) orig.appendChild(svgEl.firstChild);
+  svgEl.appendChild(orig);
+
+  const skel = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  skel.id = 'skel-layer';
+  svgEl.appendChild(skel);
+
+  const labels = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  labels.id = 'labels-layer';
+  svgEl.appendChild(labels);
+
+  const power = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  power.id = 'power-layer';
+  svgEl.appendChild(power);
+
+  canvasRoot.innerHTML = '';
+  canvasRoot.appendChild(svgEl);
+  document.getElementById('drop-hint').style.display = 'none';
+  requestAnimationFrame(fitView);
+}
+
+// ── Analyze ──
+document.getElementById('analyze-btn').addEventListener('click', async () => {
+  if (!currentFile) return;
+  document.getElementById('analyze-btn').disabled = true;
+  setStatus('Analyzing…');
+  const form = new FormData();
+  form.append('svg', currentFile);
+  try {
+    const res = await fetch('/analyze', { method: 'POST', body: form });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    analysisData = data;
+    mmPerUnit = data.mmPerUnit;
+    renderResults(data);
+    const tot = data.grooves.reduce((s,g) => s + (g.leds?.count||0), 0);
+    setStatus(`${data.grooves.length} grooves · ${tot} LEDs`);
+    updateRuler();
+  } catch(e) { setStatus('Error: ' + e.message); console.error(e); }
+  document.getElementById('analyze-btn').disabled = false;
+});
+
+function setStatus(m) { document.getElementById('status').textContent = m; }
+
+// ── SVG helpers ──
+function mk(tag, attrs) {
+  const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  if (attrs) for (const [k,v] of Object.entries(attrs)) el.setAttribute(k, String(v));
+  return el;
+}
+function uu(mm) { return mm / mmPerUnit; }  // mm → SVG units
+
+function powerPoint(item) {
+  if (!Array.isArray(item.point) || item.point.length !== 2) return null;
+  return { x: uu(item.point[0]), y: uu(item.point[1]) };
+}
+
+function routeToPathD(routePoints) {
+  if (!Array.isArray(routePoints) || routePoints.length < 2) return null;
+  return routePoints.map((point, index) => {
+    const x = uu(point[0]);
+    const y = uu(point[1]);
+    return `${index === 0 ? 'M' : 'L'}${x},${y}`;
+  }).join(' ');
+}
+
+function routeLabelPoint(routePoints) {
+  if (!Array.isArray(routePoints) || routePoints.length < 2) return null;
+  // Find the point at 50% of total path length
+  let total = 0;
+  for (let i = 1; i < routePoints.length; i++) {
+    const dx = routePoints[i][0] - routePoints[i-1][0];
+    const dy = routePoints[i][1] - routePoints[i-1][1];
+    total += Math.hypot(dx, dy);
+  }
+  let walked = 0;
+  const half = total / 2;
+  for (let i = 1; i < routePoints.length; i++) {
+    const dx = routePoints[i][0] - routePoints[i-1][0];
+    const dy = routePoints[i][1] - routePoints[i-1][1];
+    const seg = Math.hypot(dx, dy);
+    if (walked + seg >= half) {
+      const t = (half - walked) / (seg || 1);
+      return {
+        x: uu(routePoints[i-1][0] + dx * t),
+        y: uu(routePoints[i-1][1] + dy * t),
+      };
+    }
+    walked += seg;
+  }
+  const last = routePoints[routePoints.length - 1];
+  return { x: uu(last[0]), y: uu(last[1]) };
+}
+
+function renderPowerOverlay(data) {
+  const layer = document.getElementById('power-layer');
+  if (!layer) return;
+  layer.innerHTML = '';
+
+  const plan = data.powerPlan;
+  if (!plan?.feasible) return;
+
+  // ── Connection dots (rendered first = below lines) ──
+  plan.sequence.forEach((item) => {
+    const pt = powerPoint(item);
+    if (!pt) return;
+    const g = mk('g', { class: 'pw-port-group', 'data-groove-id': item.grooveId });
+    g.appendChild(mk('circle', {
+      cx: pt.x, cy: pt.y, r: uu(2.8),
+      fill: '#111', stroke: '#fff', 'stroke-width': '2px',
+      'vector-effect': 'non-scaling-stroke', class: 'pw-port',
+    }));
+    layer.appendChild(g);
+  });
+
+  // ── Routes (above dots) ──
+  let totalDistanceMM = 0;
+  const midLabels = []; // collect to render last, above everything
+  plan.links.forEach((link) => {
+    const routeD = routeToPathD(link.routePoints);
+    if (!routeD) return;
+    totalDistanceMM += link.distanceMM;
+
+    const g = mk('g', {
+      class: 'pw-link-group',
+      'data-from-groove': link.fromGrooveId,
+      'data-to-groove': link.toGrooveId,
+    });
+    g.appendChild(mk('path', {
+      d: routeD, fill: 'none',
+      stroke: '#fff', 'stroke-width': '8px', opacity: '0.3',
+      'vector-effect': 'non-scaling-stroke', 'stroke-linecap': 'round',
+    }));
+    g.appendChild(mk('path', {
+      d: routeD, fill: 'none',
+      stroke: '#111', 'stroke-width': '4px', opacity: '0.5',
+      'vector-effect': 'non-scaling-stroke', 'stroke-linecap': 'round',
+    }));
+    layer.appendChild(g);
+
+    const mid = routeLabelPoint(link.routePoints);
+    if (mid) midLabels.push({ mid, distanceMM: link.distanceMM });
+  });
+
+  // ── Distance labels — topmost pass ──
+  midLabels.forEach(({ mid, distanceMM }) => {
+    const fs = uu(4.5);
+    const label = (distanceMM / 10).toFixed(1) + ' cm';
+    const lw = label.length * fs * 0.62 + uu(4);
+    const lh = fs + uu(4);
+    layer.appendChild(mk('rect', {
+      x: mid.x - lw / 2, y: mid.y - lh / 2, width: lw, height: lh,
+      rx: uu(1.5), fill: 'rgba(255,255,255,0.95)', stroke: '#333',
+      'stroke-width': '1px', 'vector-effect': 'non-scaling-stroke',
+    }));
+    const lt = mk('text', {
+      x: mid.x, y: mid.y + fs * 0.37,
+      'text-anchor': 'middle', 'font-size': fs,
+      'font-family': 'monospace', 'font-weight': '700', fill: '#111',
+    });
+    lt.textContent = label;
+    layer.appendChild(lt);
+  });
+
+  // ── Total distance label (top-left of SVG) ──
+  if (plan.links.length) {
+    const vb = data.viewBox;
+    const lx = vb ? vb.x + vb.width * 0.02 : 0;
+    const ly = vb ? vb.y + vb.height * 0.02 : 0;
+    const fs = uu(6);
+    const label = `Wires: ${totalDistanceMM.toFixed(0)} mm`;
+    const bg = mk('rect', {
+      x: lx - uu(2), y: ly - uu(2),
+      width: label.length * fs * 0.62 + uu(6), height: fs + uu(6),
+      rx: uu(2), fill: 'rgba(17,24,32,0.85)', stroke: '#333', 'stroke-width': '1px',
+      'vector-effect': 'non-scaling-stroke',
+    });
+    layer.appendChild(bg);
+    const lt = mk('text', {
+      x: lx + uu(1), y: ly + fs * 0.85,
+      'font-size': fs, 'font-family': 'monospace', 'font-weight': '700',
+      fill: '#fff',
+    });
+    lt.textContent = label;
+    layer.appendChild(lt);
+  }
+
+}
+
+// ── Render layout ──
+function renderResults(data) {
+  activeIdx = null;
+  const skel = document.getElementById('skel-layer');
+  const power = document.getElementById('power-layer');
+  skel.innerHTML = '';
+  if (power) power.innerHTML = '';
+
+  document.getElementById('i-w').textContent     = data.docWidthMM  ? data.docWidthMM.toFixed(1)  + ' mm' : '—';
+  document.getElementById('i-h').textContent     = data.docHeightMM ? data.docHeightMM.toFixed(1) + ' mm' : '—';
+  document.getElementById('i-count').textContent = data.grooves.length;
+  const totalLenMM = data.grooves.reduce((s, g) => s + (g.lengthMM || 0), 0);
+  document.getElementById('i-total').textContent = (totalLenMM / 10).toFixed(1) + ' cm';
+  const watts = totalLenMM / 1000 * 9.6;
+  document.getElementById('i-watts').textContent  = watts.toFixed(1) + ' W';
+  document.getElementById('i-amps12').textContent = (watts / 12).toFixed(2) + ' A';
+  document.getElementById('i-amps24').textContent = (watts / 24).toFixed(2) + ' A';
+  const ws = [...new Set(data.grooves.map(g => g.widthMM))];
+  document.getElementById('i-gw').textContent = ws.map(w => w+' mm').join(', ') || '—';
+
+  data.grooves.forEach((groove, i) => {
+    const col = COLORS[i % COLORS.length];
+    const sw  = groove.widthMM / data.mmPerUnit;  // strip width in SVG units
+    const csw = uu(0.3);                           // centerline stroke width
+
+    const g = mk('g', { id: `sk-${i}` });
+    g.style.cursor = 'pointer';
+
+    // Strip band
+    g.appendChild(mk('path', { d: groove.d, stroke: col, 'stroke-width': sw,
+      'stroke-linecap': 'butt', fill: 'none', opacity: '0.12', class: 'band' }));
+
+    // Groove outline (two edges = wide + white cutout)
+    g.appendChild(mk('path', { d: groove.d, stroke: col, 'stroke-width': sw,
+      'stroke-linecap': 'butt', fill: 'none', opacity: '0.5', class: 'edge' }));
+    g.appendChild(mk('path', { d: groove.d, stroke: '#f4f8ff', 'stroke-width': sw - csw * 2,
+      'stroke-linecap': 'butt', fill: 'none', opacity: '0.92', class: 'edgein' }));
+
+    // Cut lines at every LED position
+    if (groove.leds) {
+      const lg = mk('g');
+      const pos = groove.leds.positions;
+      const halfEnd = sw * 1.6;
+      const halfMid = sw * 1.3;
+
+      pos.forEach((pt, li) => {
+        const isEnd = li === 0 || li === pos.length - 1;
+        const prev = pos[li - 1];
+        const next = pos[li + 1];
+        const ref  = next ?? prev ?? pt;
+        const base = prev && next ? prev : pt;
+        const dx = ref.x - base.x;
+        const dy = ref.y - base.y;
+        const len = Math.hypot(dx, dy) || 1;
+        const half = isEnd ? halfEnd : halfMid;
+        const px = -dy / len * half;
+        const py =  dx / len * half;
+
+        if (isEnd) {
+          lg.appendChild(mk('line', {
+            x1: pt.x - px, y1: pt.y - py, x2: pt.x + px, y2: pt.y + py,
+            stroke: '#000', 'stroke-width': '20px', opacity: '0.5',
+            'stroke-linecap': 'butt', 'vector-effect': 'non-scaling-stroke',
+          }));
+          lg.appendChild(mk('line', {
+            x1: pt.x - px, y1: pt.y - py, x2: pt.x + px, y2: pt.y + py,
+            stroke: '#fff', 'stroke-width': '10px', opacity: '1',
+            'stroke-linecap': 'butt', 'vector-effect': 'non-scaling-stroke',
+          }));
+          lg.appendChild(mk('line', {
+            x1: pt.x - px, y1: pt.y - py, x2: pt.x + px, y2: pt.y + py,
+            stroke: col, 'stroke-width': '3px', opacity: '1',
+            'stroke-linecap': 'butt', 'vector-effect': 'non-scaling-stroke',
+          }));
+        } else {
+          lg.appendChild(mk('line', {
+            x1: pt.x - px, y1: pt.y - py, x2: pt.x + px, y2: pt.y + py,
+            stroke: '#000', 'stroke-width': '8px', opacity: '0.35',
+            'stroke-linecap': 'butt', 'vector-effect': 'non-scaling-stroke',
+          }));
+          lg.appendChild(mk('line', {
+            x1: pt.x - px, y1: pt.y - py, x2: pt.x + px, y2: pt.y + py,
+            stroke: '#fff', 'stroke-width': '4px', opacity: '0.85',
+            'stroke-linecap': 'butt', 'vector-effect': 'non-scaling-stroke',
+          }));
+        }
+      });
+
+      // Ghost cut line: next section after last cut
+      const next = groove.leds.nextPosition;
+      const last = pos[pos.length - 1];
+      const prev2 = pos[pos.length - 2] ?? last;
+      if (next && last) {
+        const dx2 = next.x - prev2.x;
+        const dy2 = next.y - prev2.y;
+        const len2 = Math.hypot(dx2, dy2) || 1;
+        const px2 = -dy2 / len2 * halfEnd;
+        const py2 =  dx2 / len2 * halfEnd;
+        lg.appendChild(mk('line', {
+          x1: next.x - px2, y1: next.y - py2, x2: next.x + px2, y2: next.y + py2,
+          stroke: col, 'stroke-width': '6px', opacity: '0.4',
+          'stroke-linecap': 'butt', 'vector-effect': 'non-scaling-stroke',
+          'stroke-dasharray': '6 4',
+        }));
+      }
+
+      g.appendChild(lg);
+    }
+
+    // Label — appended to labels-layer after loop, stored here
+    g._labelData = { groove, i, col, csw };
+    g._anchor = groove.leds?.positions[Math.floor(((groove.leds?.positions.length||1)-1)/2)];
+
+    g.addEventListener('click', e => { e.stopPropagation(); setSelection(i, e.shiftKey); });
+    skel.appendChild(g);
+  });
+
+  // Labels on top layer
+  const labelsLayer = document.getElementById('labels-layer');
+  if (labelsLayer) {
+    labelsLayer.innerHTML = '';
+    Array.from(skel.children).forEach(g => {
+      const { groove, i, col, csw } = g._labelData || {};
+      const anchor = g._anchor;
+      if (!anchor || !groove) return;
+      const fs = uu(4.5);
+      const LED_INTERVAL = 1000 / 120;
+      const lenCm = (groove.lengthMM / 10).toFixed(1);
+      const plus3Cm = ((groove.lengthMM + 3 * LED_INTERVAL) / 10).toFixed(1);
+      const line1 = `G${groove.id}`;
+      const line2 = `${lenCm} cm`;
+      const line3 = `(+3: ${plus3Cm} cm)`;
+      const maxLen = Math.max(line1.length, line2.length, line3.length);
+      const tw = maxLen * fs * 0.62 + uu(4);
+      const th = fs * 3 + uu(8);
+      const lg = mk('g', { class: 'gl', transform: `translate(${anchor.x},${anchor.y})` });
+      lg.style.cursor = 'pointer';
+      lg.appendChild(mk('rect', { x: -tw/2, y: -th/2, width: tw, height: th,
+        rx: uu(2), fill: '#f4f8ff', stroke: col, 'stroke-width': csw * 1.2 }));
+      const t1 = mk('text', { x: 0, y: -fs * 1.1, 'text-anchor': 'middle',
+        'font-size': fs, 'font-family': 'monospace', 'font-weight': '700', fill: col });
+      t1.textContent = line1;
+      lg.appendChild(t1);
+      const t2 = mk('text', { x: 0, y: fs * 0.2, 'text-anchor': 'middle',
+        'font-size': fs * 0.85, 'font-family': 'monospace', 'font-weight': '400', fill: '#3a5a7a' });
+      t2.textContent = line2;
+      lg.appendChild(t2);
+      const t3 = mk('text', { x: 0, y: fs * 1.3, 'text-anchor': 'middle',
+        'font-size': fs * 0.75, 'font-family': 'monospace', 'font-weight': '400', fill: '#8a9aaa' });
+      t3.textContent = line3;
+      lg.appendChild(t3);
+      lg.addEventListener('click', e => { e.stopPropagation(); setSelection(i, e.shiftKey); });
+      labelsLayer.appendChild(lg);
+    });
+  }
+
+  // Groove cards
+  const list = document.getElementById('groove-list');
+  list.innerHTML = '';
+  data.grooves.forEach((groove, i) => {
+    const col = COLORS[i % COLORS.length];
+    const c = document.createElement('div');
+    c.className = 'gc';
+    c.style.borderLeft = `3px solid ${col}`;
+    c.innerHTML = `
+      <div class="gi" style="color:${col}">Groove ${groove.id}</div>
+      <div class="gr">
+        <span>L: <span class="gv">${groove.lengthMM} mm</span></span>
+        <span>W: <span class="gv">${groove.widthMM} mm</span></span>
+      </div>
+      ${groove.leds ? `<div class="gs">${groove.leds.count} LEDs · ${groove.leds.stripLengthMM} mm <span style="color:#8a9aaa">(+3: ${(groove.leds.stripLengthMM + 3*1000/120).toFixed(1)} mm)</span></div>` : ''}
+    `;
+    c.addEventListener('click', e => setSelection(i, e.shiftKey));
+    list.appendChild(c);
+  });
+
+  // Cut list
+  const cb = document.getElementById('cut-block');
+  const cr = document.getElementById('cut-rows');
+  cr.innerHTML = '';
+  let totL = 0, totM = 0;
+  data.grooves.forEach((g, i) => {
+    if (!g.leds) return;
+    totL += g.leds.count; totM += g.leds.stripLengthMM;
+    const row = document.createElement('div');
+    row.className = 'cut-row';
+    row.innerHTML = `<div class="cut-dot" style="background:${COLORS[i%COLORS.length]}"></div>
+      <span>G${g.id}</span><span style="color:#3a5a7a">${g.leds.stripLengthMM} mm</span>
+      <span class="cut-v">${g.leds.count} LED</span>`;
+    cr.appendChild(row);
+  });
+  document.getElementById('cut-total').textContent = `Total: ${totL} LEDs · ${totM.toFixed(1)} mm`;
+  cb.style.display = '';
+
+  renderPowerView(data);
+  renderPowerOverlay(data);
+  const powerLayer = document.getElementById('power-layer');
+  if (powerLayer) powerLayer.style.display = document.getElementById('tog-power').classList.contains('on') ? '' : 'none';
+  setSelection(null);
+}
+
+// ── Power view ──
+function renderPowerView(data) {
+  const plan = data.powerPlan;
+  const byId = Object.fromEntries(data.grooves.map(g => [g.id, g]));
+
+  // Stats
+  const stats = document.getElementById('pc-stats');
+  if (plan?.feasible) {
+    stats.innerHTML = `
+      <div class="pc-stat">Lead per strip: <strong>${plan.leadLengthMM} mm</strong></div>
+      <div class="pc-stat">Max link: <strong>${plan.maxLinkDistanceMM} mm</strong></div>
+      <div class="pc-stat">Total wire: <strong>${plan.totalLinkDistanceMM} mm</strong></div>
+      <div class="pc-stat">Connections: <strong>${plan.links.length}</strong></div>
+    `;
+  } else {
+    stats.innerHTML = `<div class="pc-stat" style="color:#ff6d00">No feasible serial chain within ${plan?.maxLinkDistanceMM||140} mm</div>`;
+  }
+
+  // Chain diagram
+  const diag = document.getElementById('chain-diagram');
+  diag.innerHTML = '';
+  if (plan?.feasible) {
+    plan.sequence.forEach((item, i) => {
+      const groove = byId[item.grooveId];
+      const col = groove ? COLORS[data.grooves.indexOf(groove) % COLORS.length] : '#ffd740';
+
+      const node = document.createElement('div');
+      node.className = 'chain-node';
+      node.dataset.grooveId = item.grooveId;
+      node.innerHTML = `
+        <div class="chain-bubble" style="background:${col};color:#fff">
+          <div style="font-size:14px;font-weight:800">#${item.order}</div>
+          <div>G${item.grooveId}</div>
+        </div>
+        <div class="chain-node-label">${item.side}</div>
+      `;
+      const gi = data.grooves.findIndex(g => g.id === item.grooveId);
+      node.addEventListener('click', () => { if (gi >= 0) { setSelection(gi); switchView('layout'); } });
+      diag.appendChild(node);
+
+      if (i < plan.links.length) {
+        const link = plan.links[i];
+        const arr = document.createElement('div');
+        arr.className = 'chain-arrow';
+        const wireHtml = link.wires?.length
+          ? `<div class="arrow-wires">${link.wires.map(w => `<span class="wire-chip">${w/10}cm</span>`).join('')}</div>`
+          : '';
+        arr.innerHTML = `<div class="arrow-line"></div><div class="arrow-dist">${link.distanceMM} mm${link.routeMode === 'groove' ? ' · groove' : ''}</div>${wireHtml}`;
+        diag.appendChild(arr);
+      }
+    });
+  }
+
+  // Table
+  const tbody = document.getElementById('pc-table-body');
+  tbody.innerHTML = '';
+  if (plan?.feasible) {
+    plan.sequence.forEach((item, i) => {
+      const groove = byId[item.grooveId];
+      const col = groove ? COLORS[data.grooves.indexOf(groove) % COLORS.length] : '#888';
+      const link = plan.links[i];
+      const tr = document.createElement('tr');
+      tr.dataset.grooveId = item.grooveId;
+      tr.innerHTML = `
+        <td style="color:#ffd740;font-weight:700">${item.order}</td>
+        <td><span class="dot" style="background:${col};margin-right:6px"></span>Groove ${item.grooveId}</td>
+        <td style="color:#82b1ff">${item.side}</td>
+        <td>${link ? `G${link.toGrooveId} · ${link.distanceMM} mm${link.routeMode === 'groove' ? ' · groove' : ''}` : '<span style="color:#3a5a7a">—</span>'}</td>
+        <td>${link?.wires?.length ? link.wires.map(w => `<span class="wire-chip">${w/10}cm</span>`).join('') : '<span style="color:#3a5a7a">—</span>'}</td>
+      `;
+      const gi = data.grooves.findIndex(g => g.id === item.grooveId);
+      tr.style.cursor = 'pointer';
+      tr.addEventListener('click', () => { if (gi >= 0) { setSelection(gi); switchView('layout'); } });
+      tbody.appendChild(tr);
+    });
+  }
+}
+
+// ── Selection ──
+function setSelection(idx, additive = false) {
+  if (idx === null) {
+    activeIdx = null;
+    selectedIndices.clear();
+  } else if (additive) {
+    if (selectedIndices.has(idx)) {
+      selectedIndices.delete(idx);
+      activeIdx = selectedIndices.size > 0 ? [...selectedIndices].at(-1) : null;
+    } else {
+      selectedIndices.add(idx);
+      activeIdx = idx;
+    }
+  } else {
+    selectedIndices.clear();
+    selectedIndices.add(idx);
+    activeIdx = idx;
+  }
+
+  const hasAny = selectedIndices.size > 0;
+
+  document.querySelectorAll('.gc').forEach((c,i) => c.classList.toggle('active', selectedIndices.has(i)));
+  document.querySelectorAll('[id^="sk-"]').forEach((g,i) => {
+    const active = !hasAny || selectedIndices.has(i);
+    g.setAttribute('opacity', active ? '1' : '0.1');
+    g.querySelector('.band')?.setAttribute('opacity', active ? (!hasAny?'0.12':'0.25') : '0.03');
+    g.querySelector('.edgein')?.setAttribute('opacity', active ? '0.92' : '0.5');
+  });
+  document.querySelectorAll('.gl').forEach((l,i) =>
+    l.setAttribute('opacity', !hasAny ? '1' : selectedIndices.has(i) ? '1' : '0.15'));
+  document.querySelectorAll('.pw-port-group').forEach(g => {
+    const gid = Number(g.dataset.grooveId);
+    const active = !hasAny || (analysisData && [...selectedIndices].some(si => analysisData.grooves[si]?.id === gid));
+    g.setAttribute('opacity', active ? '1' : '0.15');
+  });
+  document.querySelectorAll('.pw-link-group').forEach(g => {
+    const from = Number(g.dataset.fromGroove);
+    const to = Number(g.dataset.toGroove);
+    const active = !hasAny || (analysisData && [...selectedIndices].some(si => {
+      const gid = analysisData.grooves[si]?.id;
+      return gid === from || gid === to;
+    }));
+    g.setAttribute('opacity', active ? '1' : '0.12');
+  });
+
+  const origLayer = document.getElementById('orig-layer');
+  if (origLayer) origLayer.setAttribute('opacity', !hasAny ? '0.18' : '0.06');
+
+  // Focus card
+  const selGrooves = analysisData ? [...selectedIndices].map(i => analysisData.grooves[i]).filter(Boolean) : [];
+  const g = activeIdx !== null && analysisData ? analysisData.grooves[activeIdx] : null;
+
+  if (selGrooves.length >= 2) {
+    const totalMM = selGrooves.reduce((s, gr) => s + gr.lengthMM, 0);
+    const totalCM = (totalMM / 10).toFixed(1);
+    const totalLeds = selGrooves.reduce((s, gr) => s + (gr.leds?.count || 0), 0);
+    document.getElementById('fn').textContent  = `${selGrooves.length} grooves`;
+    document.getElementById('fl').textContent  = totalMM.toFixed(1) + ' mm / ' + totalCM + ' cm';
+    document.getElementById('fw').textContent  = '—';
+    document.getElementById('fle').textContent = totalLeds;
+    document.getElementById('fs').textContent  = '—';
+    document.getElementById('focus-color').style.display = 'none';
+  } else {
+    document.getElementById('fn').textContent  = g ? `Groove ${g.id}` : '—';
+    document.getElementById('fl').textContent  = g ? g.lengthMM + ' mm' : '—';
+    document.getElementById('fw').textContent  = g ? g.widthMM  + ' mm' : '—';
+    document.getElementById('fle').textContent = g?.leds ? g.leds.count : '—';
+    document.getElementById('fs').textContent  = g?.leds ? g.leds.stripLengthMM + ' mm' : '—';
+
+    const focusColor = document.getElementById('focus-color');
+    if (g) {
+      focusColor.style.display = '';
+      const saved = lsGetColors(currentFileName)[g.id] || '';
+      updateSwatchActive(saved);
+      document.getElementById('focus-color-label').textContent = saved;
+    } else {
+      focusColor.style.display = 'none';
+    }
+  }
+
+  // Highlight power table
+  document.querySelectorAll('#pc-table-body tr').forEach(r =>
+    r.classList.toggle('active', hasAny && analysisData && [...selectedIndices].some(si => analysisData.grooves[si]?.id === Number(r.dataset.grooveId))));
+  document.querySelectorAll('.chain-node').forEach(n =>
+    n.classList.toggle('active', hasAny && analysisData && [...selectedIndices].some(si => analysisData.grooves[si]?.id === Number(n.dataset.grooveId))));
+}
+
+viewLayout.addEventListener('click', () => { if (activeIdx !== null) setSelection(null); });
+
+// ── Layer toggles ──
+document.getElementById('tog-orig').addEventListener('click', function() {
+  this.classList.toggle('on');
+  const l = document.getElementById('orig-layer');
+  if (l) l.style.display = this.classList.contains('on') ? '' : 'none';
+});
+document.getElementById('tog-skel').addEventListener('click', function() {
+  this.classList.toggle('on');
+  const l = document.getElementById('skel-layer');
+  if (l) l.style.display = this.classList.contains('on') ? '' : 'none';
+});
+document.getElementById('tog-power').addEventListener('click', function() {
+  this.classList.toggle('on');
+  const l = document.getElementById('power-layer');
+  if (l) l.style.display = this.classList.contains('on') ? '' : 'none';
+});
+</script>
+</body>
+</html>

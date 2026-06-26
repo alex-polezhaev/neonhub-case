@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon Calculator</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0a0a10;
+  color: #d8d8e8;
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: 100vh;
+}
+
+/* ── Sidebar ─────────────────────────────── */
+.sidebar {
+  background: #10101a;
+  border-right: 1px solid #1e1e30;
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  overflow-y: auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.25rem;
+}
+.logo-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: #f7b731;
+  box-shadow: 0 0 18px #f7b73188;
+  flex-shrink: 0;
+}
+.logo h1 { font-size: 1rem; font-weight: 600; color: #fff; }
+.logo p  { font-size: 0.72rem; color: #666; margin-top: 1px; }
+
+.section-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #555;
+  margin-bottom: 0.6rem;
+}
+
+/* Upload zone */
+.upload-zone {
+  border: 2px dashed #2a2a3e;
+  border-radius: 12px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  position: relative;
+  min-height: 130px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 0.4rem;
+}
+.upload-zone:hover { border-color: #f7b731; background: #14141e; }
+.upload-zone.has-file { border-style: solid; border-color: #3a3a50; background: #12121c; }
+.upload-zone input {
+  position: absolute; inset: 0; opacity: 0;
+  cursor: pointer; width: 100%; height: 100%;
+}
+.upload-icon { font-size: 1.6rem; opacity: 0.5; }
+.upload-text { font-size: 0.8rem; color: #777; }
+.upload-filename { font-size: 0.78rem; color: #f7b731; font-weight: 500; word-break: break-all; }
+
+/* Fields */
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 0.75rem; color: #888; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+input[type=number], input[type=range], select {
+  background: #0d0d18;
+  border: 1px solid #252535;
+  border-radius: 8px;
+  color: #d8d8e8;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color .15s;
+  width: 100%;
+}
+input[type=number] { padding: 8px 10px; }
+input[type=number]:focus { border-color: #f7b731; }
+select { padding: 8px 10px; appearance: none; }
+
+.slider-wrap {
+  display: flex; align-items: center; gap: 8px;
+}
+input[type=range] {
+  flex: 1; height: 4px;
+  -webkit-appearance: none;
+  background: #252535;
+  border: none;
+  border-radius: 2px;
+  padding: 0;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #f7b731;
+  cursor: pointer;
+}
+.slider-val { font-size: 0.8rem; color: #f7b731; min-width: 32px; text-align: right; font-weight: 500; }
+
+.threshold-auto {
+  font-size: 0.72rem;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+input[type=checkbox] { accent-color: #f7b731; }
+
+/* Analyze button */
+.btn-analyze {
+  width: 100%;
+  padding: 0.7rem;
+  background: #f7b731;
+  color: #0a0a10;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity .2s, transform .1s;
+  margin-top: auto;
+}
+.btn-analyze:hover { opacity: 0.88; }
+.btn-analyze:active { transform: scale(0.98); }
+.btn-analyze:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ── Main area ───────────────────────────── */
+.main {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto;
+}
+
+/* State panels */
+.state { display: none; }
+.state.active { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.empty-state {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 0.75rem; opacity: 0.35;
+  min-height: 50vh;
+}
+.empty-state .big-icon { font-size: 4rem; }
+.empty-state p { font-size: 0.85rem; color: #666; }
+
+/* Loader */
+.loader { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 50vh; gap: 1rem; }
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid #1e1e30;
+  border-top-color: #f7b731;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-label { font-size: 0.85rem; color: #666; }
+.loader-steps { display: flex; flex-direction: column; gap: 4px; margin-top: 0.5rem; }
+.loader-step { font-size: 0.75rem; color: #444; }
+.loader-step.active { color: #f7b731; }
+
+/* Results */
+.section-label-result {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.metrics-row-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.metric {
+  background: #10101a;
+  border: 1px solid #1e1e30;
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+}
+.metric-blue {
+  border-color: #1a2a40;
+  background: #0d1520;
+}
+.metric-teal {
+  border-color: #0d2828;
+  background: #081818;
+}
+.metric-green {
+  border-color: #142010;
+  background: #0a1208;
+}
+.metric-val { font-size: 1.5rem; font-weight: 600; color: #f7b731; line-height: 1; }
+.metric-blue .metric-val  { color: #58b4f0; }
+.metric-teal .metric-val  { color: #3dd4c8; }
+.metric-green .metric-val { color: #7ddd50; }
+.metric-unit { font-size: 0.68rem; color: #555; margin-top: 3px; }
+.metric-label { font-size: 0.72rem; color: #888; margin-top: 6px; }
+
+.price-card {
+  background: linear-gradient(135deg, #181208, #1a1408);
+  border: 1px solid #3a2a08;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.price-meta { display: flex; flex-direction: column; gap: 4px; }
+.price-meta-label { font-size: 0.8rem; color: #a08020; font-weight: 500; }
+.price-meta-sub { font-size: 0.72rem; color: #605020; }
+.price-big { font-size: 2.2rem; font-weight: 700; color: #f7b731; }
+
+.images-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.img-panel {
+  background: #10101a;
+  border: 1px solid #1e1e30;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.img-panel-label {
+  font-size: 0.72rem;
+  color: #555;
+  padding: 8px 12px;
+  border-bottom: 1px solid #1e1e30;
+  background: #0d0d18;
+}
+.img-panel img {
+  width: 100%; display: block;
+  max-height: 400px; object-fit: contain;
+  background: #08080e;
+}
+
+.cmp-wrap {
+  overflow-x: auto;
+}
+.cmp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+.cmp-table th {
+  background: #0d0d18;
+  color: #555;
+  font-weight: 600;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 7px 12px;
+  text-align: left;
+  border-bottom: 1px solid #1e1e30;
+}
+.cmp-table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid #131320;
+  color: #bbb;
+  white-space: nowrap;
+}
+.cmp-table tr.cmp-current td { background: #13130a; color: #f7b731; }
+.cmp-table tr.cmp-alt { cursor: pointer; }
+.cmp-table tr.cmp-alt:hover td { background: #0e0e1a; color: #d8d8e8; }
+.cmp-table td.cmp-price { color: #f7b731; font-weight: 600; }
+.cmp-table tr.cmp-current td.cmp-price { color: #ffe47a; }
+.cmp-table td.cmp-tube { font-weight: 600; color: #888; }
+.cmp-table tr.cmp-current td.cmp-tube { color: #f7b731; }
+.cmp-table td.cmp-prev { padding: 4px 8px; width: 90px; }
+.cmp-table td.cmp-prev img { height: 56px; width: 90px; object-fit: cover; border-radius: 4px; display: block; cursor: zoom-in; transition: opacity .15s; }
+.cmp-table td.cmp-prev img:hover { opacity: 0.8; }
+.cmp-prev-placeholder { height: 56px; width: 90px; background: #0d0d18; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+.cmp-prev-placeholder .spinner { width: 16px; height: 16px; border-width: 2px; }
+
+#lightbox {
+  display: none;
+  position: fixed; inset: 0;
+  background: #000000cc;
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+#lightbox.active { display: flex; }
+#lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 0 60px #000;
+}
+
+.debug-card {
+  background: #0d0d18;
+  border: 1px solid #1e1e30;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  font-size: 0.75rem;
+  color: #555;
+  line-height: 1.9;
+}
+.debug-card strong { color: #888; font-weight: 500; }
+
+.error-card {
+  background: #180808;
+  border: 1px solid #3a1010;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  font-size: 0.82rem;
+  color: #e05050;
+  min-height: 50vh;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 0.5rem;
+}
+.error-card p { max-width: 400px; text-align: center; line-height: 1.6; }
+.error-hint { font-size: 0.72rem; color: #a03030; margin-top: 0.25rem; }
+
+/* ── Threshold step ──────────────────────── */
+.thresh-step {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: calc(100vh - 120px);
+}
+.thresh-header .thresh-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+.thresh-header .thresh-hint {
+  font-size: 0.75rem;
+  color: #555;
+  margin-top: 4px;
+}
+.thresh-img-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 300px;
+  background: #06060e;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.thresh-img-wrap img {
+  max-width: 100%;
+  max-height: 65vh;
+  object-fit: contain;
+  display: block;
+}
+.thresh-spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #06060ecc;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s;
+}
+.thresh-spinner.active { opacity: 1; }
+.thresh-badge {
+  position: absolute;
+  top: 10px; right: 10px;
+  background: #000000cc;
+  color: #00ff77;
+  border: 1px solid #00ff7744;
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.78rem;
+  font-family: monospace;
+  letter-spacing: 0.03em;
+}
+.thresh-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #10101a;
+  border: 1px solid #1e1e30;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+.thresh-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.thresh-slider-row span {
+  font-size: 0.7rem;
+  color: #444;
+  min-width: 26px;
+  text-align: center;
+}
+.thresh-slider-row input[type=range] {
+  flex: 1;
+  height: 6px;
+  background: #252535;
+  -webkit-appearance: none;
+  border: none;
+  border-radius: 3px;
+}
+.thresh-slider-row input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #00ff77;
+  cursor: pointer;
+  box-shadow: 0 0 10px #00ff7766;
+}
+.thresh-adj-label {
+  text-align: center;
+  font-size: 0.78rem;
+  color: #00ff77;
+  font-family: monospace;
+}
+.btn-calc {
+  width: 100%;
+  padding: 13px;
+  background: #f7b731;
+  color: #0a0a10;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+}
+.btn-calc:hover { opacity: 0.88; }
+.btn-calc:active { transform: scale(0.98); }
+
+/* Responsive */
+@media (max-width: 800px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { border-right: none; border-bottom: 1px solid #1e1e30; }
+  .metrics-row { grid-template-columns: repeat(2, 1fr); }
+  .images-row { grid-template-columns: 1fr; }
+  .price-big { font-size: 1.6rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ── Sidebar ─────────────────────────────────── -->
+  <aside class="sidebar">
+
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <div>
+        <h1>Neon Calculator</h1>
+        <p>Image analysis · Tube cost</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Sign photo</div>
+      <div class="upload-zone" id="dropZone">
+        <input type="file" id="fileInput" accept="image/*">
+        <div class="upload-icon" id="uploadIcon">🖼</div>
+        <div class="upload-text" id="uploadText">Click or drop a photo</div>
+        <div class="upload-filename" id="uploadFilename" style="display:none"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Multi-Otsu threshold correction</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="slider-wrap">
+          <input type="range" id="threshAdjust" min="-60" max="60" step="1" value="0">
+          <span class="slider-val" id="threshAdjustVal">0</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:#444">
+          <span>darker (−)</span><span>lighter (+)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden inputs kept for JS compatibility -->
+    <input type="hidden" id="tubeWidth" value="6">
+    <span id="tubeWidthVal" style="display:none">6</span>
+    <input type="hidden" id="thicknessAdjust" value="0">
+    <span id="thicknessAdjustVal" style="display:none">0</span>
+    <input type="hidden" id="pricePerMeter" value="1500">
+    <input type="hidden" id="markup" value="30">
+    <input type="hidden" id="pricePerM2Cover" value="0">
+    <input type="hidden" id="coverEnabled" type="checkbox" checked>
+    <input type="hidden" id="pricePerKWh" value="5.5">
+    <input type="hidden" id="hoursPerDay" value="12">
+    <input type="hidden" id="currency" value="₽">
+
+    <button class="btn-analyze" id="analyzeBtn" disabled onclick="analyze()">
+      Calculate cost →
+    </button>
+
+  </aside>
+
+  <!-- ── Main ──────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Empty -->
+    <div class="state active" id="stateEmpty">
+      <div class="empty-state">
+        <div class="big-icon">💡</div>
+        <p>Upload a photo of the neon sign</p>
+      </div>
+    </div>
+
+    <!-- Threshold tuning step -->
+    <div class="state" id="stateThreshold">
+      <div class="thresh-step">
+        <div class="thresh-header">
+          <div class="thresh-title">Threshold tuning · Step 1 of 2</div>
+          <div class="thresh-hint">The green outline should trace the tubes precisely — adjust the slider, then click "Calculate"</div>
+        </div>
+
+        <div class="thresh-img-wrap">
+          <img id="imgThreshPreview" src="" alt="">
+          <div class="thresh-badge" id="threshBadge">threshold: —</div>
+          <div class="thresh-spinner" id="threshSpinner">
+            <div class="spinner"></div>
+          </div>
+        </div>
+
+        <div class="thresh-controls">
+          <div class="thresh-slider-row">
+            <span>−60</span>
+            <input type="range" id="threshAdjustMain" min="-60" max="60" step="1" value="0">
+            <span>+60</span>
+          </div>
+          <div class="thresh-adj-label" id="threshAdjMainLabel">Threshold correction: 0</div>
+          <button class="btn-calc" onclick="analyze()">Calculate →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="state" id="stateLoading">
+      <div class="loader">
+        <div class="spinner"></div>
+        <div class="loader-label" id="loaderLabel">Processing...</div>
+        <div class="loader-steps">
+          <div class="loader-step" id="step1">① Image upload and resize</div>
+          <div class="loader-step" id="step2">② Brightness threshold (Otsu)</div>
+          <div class="loader-step" id="step3">③ Morphological cleanup</div>
+          <div class="loader-step" id="step4">④ Zhang-Suen skeletonization</div>
+          <div class="loader-step" id="step5">⑤ Scale and length computation</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="state" id="stateError">
+      <div class="error-card">
+        <p id="errorMsg"></p>
+        <p class="error-hint">Try lowering the brightness threshold or using a different photo</p>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="state" id="stateResult">
+
+      <div style="display:flex;gap:10px;align-items:center">
+        <button onclick="showState('stateThreshold')" style="background:#10101a;border:1px solid #252535;color:#888;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.8rem">← Change threshold</button>
+      </div>
+
+      <!-- Hidden elements kept for JS compatibility -->
+      <span id="rLengthM" style="display:none"></span>
+      <span id="rLengthCm" style="display:none"></span>
+      <span id="rWidthPx" style="display:none"></span>
+      <span id="rThresh" style="display:none"></span>
+      <span id="rThreshMethod" style="display:none"></span>
+      <span id="rSignWidth" style="display:none"></span>
+      <span id="rSignHeight" style="display:none"></span>
+      <span id="rSignArea" style="display:none"></span>
+      <div id="coverSection" style="display:none">
+        <span id="rCoverArea"></span><span id="rCoverPrice"></span>
+        <span id="rCoverCur"></span><span id="rCoverMarginPx"></span>
+        <span id="rCoverMarginLabel"></span>
+      </div>
+      <span id="rPowerW" style="display:none"></span>
+      <span id="rPowerDay" style="display:none"></span>
+      <span id="rPowerDayLabel" style="display:none"></span>
+      <span id="rElecDay" style="display:none"></span>
+      <span id="rElecDayCur" style="display:none"></span>
+      <span id="rElecMonth" style="display:none"></span>
+      <span id="rElecMonthCur" style="display:none"></span>
+      <span id="rPriceTotal" style="display:none"></span>
+      <span id="rPriceBreak" style="display:none"></span>
+      <img id="imgOriginal" src="" alt="" style="display:none">
+      <img id="imgOverlay" src="" alt="" style="display:none">
+      <img id="imgViz" src="" alt="" style="display:none">
+
+      <!-- Comparison table -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div class="section-label-result" style="margin-bottom:0">Configuration comparison <span style="color:#333;font-weight:400;text-transform:none;letter-spacing:0">— one design, different tubes and thresholds</span></div>
+          <button id="btnCopyJson" onclick="copyTableJson()" style="background:#10101a;border:1px solid #252535;color:#888;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:0.75rem;white-space:nowrap;transition:border-color .15s,color .15s">Copy JSON</button>
+        </div>
+        <div class="cmp-wrap">
+          <table class="cmp-table" id="cmpTable">
+            <thead>
+              <tr>
+                <th>Tube</th>
+                <th>Length</th>
+                <th>Power</th>
+                <th>Cost</th>
+              </tr>
+            </thead>
+            <tbody id="cmpBody"></tbody>
+          </table>
+        </div>
+        <div style="font-size:0.7rem;color:#333;margin-top:6px">
+          Correction −px = morphological erosion (thinner) · +px = dilation (thicker) · Click a row to apply.
+        </div>
+      </div>
+
+      <div class="debug-card" id="debugCard"></div>
+
+    </div>
+
+  </main>
+</div>
+
+<div id="lightbox" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<script>
+// ── State ───────────────────────────────────────────────────────────
+let currentFile   = null;
+let currentObjUrl = null;
+
+// ── File upload ─────────────────────────────────────────────────────
+const fileInput = document.getElementById('fileInput');
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  currentFile = file;
+  document.getElementById('uploadIcon').textContent = '✅';
+  document.getElementById('uploadText').style.display = 'none';
+  document.getElementById('uploadFilename').style.display = '';
+  document.getElementById('uploadFilename').textContent = file.name;
+  document.getElementById('dropZone').classList.add('has-file');
+  document.getElementById('analyzeBtn').disabled = false;
+  // Reset threshold and jump to step 1
+  document.getElementById('threshAdjustMain').value = 0;
+  document.getElementById('threshAdjMainLabel').textContent = 'Threshold correction: 0';
+  document.getElementById('threshAdjust').value = 0;
+  document.getElementById('threshAdjustVal').textContent = '0';
+  showState('stateThreshold');
+  updatePreview();
+});
+
+// ── Sliders ─────────────────────────────────────────────────────────
+const tubeSlider = document.getElementById('tubeWidth');
+tubeSlider.addEventListener('input', () => {
+  document.getElementById('tubeWidthVal').textContent = tubeSlider.value;
+});
+
+const threshAdjustSlider = document.getElementById('threshAdjust');
+threshAdjustSlider.addEventListener('input', () => {
+  const v = parseInt(threshAdjustSlider.value);
+  document.getElementById('threshAdjustVal').textContent = v > 0 ? '+' + v : (v === 0 ? '0' : v);
+  // sync main slider
+  document.getElementById('threshAdjustMain').value = v;
+  const label = v === 0 ? '0' : (v > 0 ? '+' : '') + v;
+  document.getElementById('threshAdjMainLabel').textContent = 'Threshold correction: ' + label;
+  if (document.getElementById('stateThreshold').classList.contains('active')) updatePreview();
+});
+
+const thickSlider = document.getElementById('thicknessAdjust');
+const COMPACT_SIDE_CM = 55;
+
+function isCompactSign(widthCm, heightCm) {
+  return Number.isFinite(widthCm) && Number.isFinite(heightCm) &&
+    (widthCm <= COMPACT_SIDE_CM || heightCm <= COMPACT_SIDE_CM);
+}
+
+function sortConfigs(configs) {
+  return [...configs].sort((a, b) => (a.w - b.w) || (a.adj - b.adj));
+}
+
+function mergeUniqueConfigs(...groups) {
+  const seen = new Set();
+  const merged = [];
+  for (const cfg of groups.flat()) {
+    const key = `${cfg.w}:${cfg.adj}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(cfg);
+  }
+  return sortConfigs(merged);
+}
+
+function getConfigsForDimensions(widthCm, heightCm) {
+  const baseConfigs = [
+    { w: 6, adj: -2   },
+    { w: 6, adj: -1.5 },
+    { w: 6, adj: -1   },
+    { w: 6, adj: -0.5 },
+    { w: 6, adj:  0   },
+    { w: 6, adj: +0.5 },
+    { w: 6, adj: +1   },
+    { w: 6, adj: +2   },
+    { w: 8, adj: -3   },
+    { w: 8, adj: -2.5 },
+    { w: 8, adj: -2   },
+    { w: 8, adj: -1   },
+    { w: 8, adj: -0.5 },
+    { w: 8, adj:  0   },
+    { w: 8, adj: +0.5 },
+    { w: 8, adj: +1   },
+    { w: 8, adj: +2   },
+  ];
+
+  const compactExtraConfigs = [
+    { w: 6, adj: -3   },
+    { w: 6, adj: -2.5 },
+    { w: 8, adj: -4   },
+    { w: 8, adj: -3.5 },
+  ];
+
+  return isCompactSign(widthCm, heightCm)
+    ? mergeUniqueConfigs(baseConfigs, compactExtraConfigs)
+    : baseConfigs;
+}
+
+thickSlider.addEventListener('input', () => {
+  const v = parseFloat(thickSlider.value);
+  document.getElementById('thicknessAdjustVal').textContent = v > 0 ? '+' + v : v;
+});
+
+// ── State switcher ───────────────────────────────────────────────────
+function showState(id) {
+  ['stateEmpty','stateThreshold','stateLoading','stateError','stateResult'].forEach(s => {
+    document.getElementById(s).classList.toggle('active', s === id);
+  });
+}
+
+// ── Threshold preview ────────────────────────────────────────────────
+let previewTimer = null;
+
+function updatePreview() {
+  if (!currentFile) return;
+  clearTimeout(previewTimer);
+  document.getElementById('threshSpinner').classList.add('active');
+  previewTimer = setTimeout(async () => {
+    const adj = parseInt(document.getElementById('threshAdjustMain').value);
+    const form = new FormData();
+    form.append('image', currentFile);
+    form.append('threshAdjust', adj);
+    try {
+      const resp = await fetch('/preview', { method: 'POST', body: form });
+      const d = await resp.json();
+      if (!d.ok) return;
+      document.getElementById('imgThreshPreview').src = 'data:image/png;base64,' + d.overlayBase64;
+      const adjStr = adj === 0 ? '' : (adj > 0 ? ' +' : ' ') + adj;
+      document.getElementById('threshBadge').textContent = `threshold: ${d.threshold}${adjStr}  (auto: ${d.autoThresh})`;
+    } catch {}
+    finally { document.getElementById('threshSpinner').classList.remove('active'); }
+  }, 120);
+}
+
+// Sync main threshold slider ↔ sidebar slider
+document.getElementById('threshAdjustMain').addEventListener('input', () => {
+  const v = parseInt(document.getElementById('threshAdjustMain').value);
+  const label = v === 0 ? '0' : (v > 0 ? '+' : '') + v;
+  document.getElementById('threshAdjMainLabel').textContent = 'Threshold correction: ' + label;
+  document.getElementById('threshAdjust').value = v;
+  document.getElementById('threshAdjustVal').textContent = v > 0 ? '+' + v : (v === 0 ? '0' : v);
+  updatePreview();
+});
+
+// ── Loading animation ────────────────────────────────────────────────
+const steps = ['step1','step2','step3','step4','step5'];
+let stepInterval = null;
+
+function startStepAnim() {
+  let i = 0;
+  steps.forEach(s => document.getElementById(s).classList.remove('active'));
+  document.getElementById(steps[0]).classList.add('active');
+  stepInterval = setInterval(() => {
+    document.getElementById(steps[i]).classList.remove('active');
+    i = (i + 1) % steps.length;
+    document.getElementById(steps[i]).classList.add('active');
+  }, 900);
+}
+
+function stopStepAnim() {
+  clearInterval(stepInterval);
+  steps.forEach(s => document.getElementById(s).classList.remove('active'));
+}
+
+// ── Analyze ──────────────────────────────────────────────────────────
+// ── Comparison table ─────────────────────────────────────────────────
+// Rows = tube widths (6, 8mm) × threshold variants
+// Same threshold  → instant linear scaling
+// Other threshold → async server fetch (shows visual tube thickness px)
+function buildComparisonTable(data, cur) {
+  const fmt       = n => Math.round(n).toLocaleString('ru-RU');
+  const markup    = parseFloat(document.getElementById('markup').value) || 0;
+  const ppm       = parseFloat(document.getElementById('pricePerMeter').value) || 0;
+  const curThresh = data.threshold;
+  const curWidth  = parseFloat(document.getElementById('tubeWidth').value);
+
+  const curAdj = parseFloat(document.getElementById('thicknessAdjust').value) || 0;
+
+  const configs = mergeUniqueConfigs(
+    getConfigsForDimensions(data.signWidthCm, data.signHeightCm),
+    [{ w: curWidth, adj: curAdj }]
+  );
+
+  const tbody = document.getElementById('cmpBody');
+  tbody.innerHTML = '';
+
+  document.querySelector('.cmp-table thead tr').innerHTML =
+    '<th></th><th>Tube</th><th>Correction</th>' +
+    '<th>Width</th><th>Height</th><th>Area</th><th>Length</th><th>Power</th><th>Cost</th>';
+
+  const dash = '<span style="color:#2a2a3a">…</span>';
+
+  configs.forEach(({ w, adj }) => {
+    {
+      const isCurrent = (w === curWidth && adj === curAdj);
+      const rowId     = `cmp-${w}-adj${adj}`;
+      const adjLabel  = (adj > 0 ? '+' : '') + adj + ' px';
+
+
+      // Only the current-threshold+current-adj row can be computed instantly
+      let lengthM, totalPrice, powerW, signW, signH, thickPx, signArea;
+      if (isCurrent) {
+        lengthM    = data.lengthM;
+        powerW     = data.powerW;
+        totalPrice = data.totalPrice;
+        signW      = data.signWidthCm;
+        signH      = data.signHeightCm;
+        thickPx    = data.avgWidthPx;
+        signArea   = ((data.signWidthMm / 1000) * (data.signHeightMm / 1000)).toFixed(4);
+      }
+
+      const tr = document.createElement('tr');
+      tr.id        = rowId;
+      tr.className = isCurrent ? 'cmp-current' : 'cmp-alt';
+
+      const previewCell = isCurrent
+        ? `<td class="cmp-prev"><img src="data:image/webp;base64,${data.vizBase64}" alt="" onclick="event.stopPropagation();openLightbox(this.src)"></td>`
+        : `<td class="cmp-prev"><div class="cmp-prev-placeholder"><div class="spinner"></div></div></td>`;
+
+      tr.innerHTML = `
+        ${previewCell}
+        <td class="cmp-tube">${w} mm${isCurrent ? ' ✓' : ''}</td>
+        <td style="color:#555">${adjLabel}</td>
+        <td class="cmp-sw">${signW    != null ? signW     + ' cm' : dash}</td>
+        <td class="cmp-sh">${signH    != null ? signH     + ' cm' : dash}</td>
+        <td class="cmp-area">${signArea != null ? signArea + ' m²' : dash}</td>
+        <td class="cmp-len">${lengthM != null ? lengthM   + ' m'  : dash}</td>
+        <td class="cmp-pow">${powerW  != null ? powerW   + ' W' : dash}</td>
+        <td class="cmp-price">${totalPrice != null ? fmt(totalPrice) + ' ' + cur : dash}</td>
+      `;
+
+      if (!isCurrent) {
+        tr.title = 'Click to apply';
+        tr.addEventListener('click', () => {
+          document.getElementById('tubeWidth').value = w;
+          document.getElementById('tubeWidthVal').textContent = w;
+          thickSlider.value = adj;
+          document.getElementById('thicknessAdjustVal').textContent = adj > 0 ? '+' + adj : (adj === 0 ? '0' : adj);
+          analyze();
+        });
+      }
+
+      tbody.appendChild(tr);
+    }
+  });
+
+  // Async fetch for all non-current rows → sort by price when all done
+  const toFetch = configs.filter(({ w, adj }) => !(w === curWidth && adj === curAdj));
+
+  const fetchAll = toFetch.map(({ w, adj }) => {
+    const form = new FormData();
+    form.append('image',           currentFile);
+    form.append('tubeWidthMm',     w);
+    form.append('pricePerMeter',   ppm);
+    form.append('markup',          markup);
+    form.append('threshAdjust',    document.getElementById('threshAdjust').value);
+    form.append('pricePerM2Cover', '0');
+    form.append('thicknessAdjust', adj);
+
+    return fetch('/analyze', { method: 'POST', body: form })
+      .then(r => r.json())
+      .then(d => {
+        if (!d.ok) return;
+        const tr = document.getElementById(`cmp-${w}-adj${adj}`);
+        if (!tr) return;
+        const tp = Math.round(d.lengthM * ppm * (1 + markup / 100));
+        tr.dataset.price     = tp;
+        tr.dataset.tubeMm    = w;
+        tr.dataset.adj       = adj;
+        tr.dataset.widthCm   = d.signWidthCm;
+        tr.dataset.heightCm  = d.signHeightCm;
+        tr.dataset.lengthM   = d.lengthM;
+        tr.dataset.powerW    = d.powerW;
+        tr.dataset.coverM2   = d.coverAreaM2;
+        tr.dataset.signM2    = ((d.signWidthMm / 1000) * (d.signHeightMm / 1000)).toFixed(4);
+        tr.dataset.threshold = d.threshold;
+        const prevCell = tr.querySelector('.cmp-prev');
+        if (prevCell) {
+          const img = document.createElement('img');
+          img.src = 'data:image/webp;base64,' + d.vizBase64;
+          img.alt = '';
+          img.addEventListener('click', e => { e.stopPropagation(); openLightbox(img.src); });
+          prevCell.innerHTML = '';
+          prevCell.appendChild(img);
+        }
+        tr.querySelector('.cmp-sw').textContent   = d.signWidthCm  + ' cm';
+        tr.querySelector('.cmp-sh').textContent   = d.signHeightCm + ' cm';
+        tr.querySelector('.cmp-area').textContent = ((d.signWidthMm / 1000) * (d.signHeightMm / 1000)).toFixed(4) + ' m²';
+        tr.querySelector('.cmp-len').textContent  = d.lengthM      + ' m';
+        tr.querySelector('.cmp-pow').textContent   = d.powerW       + ' W';
+        tr.querySelector('.cmp-price').textContent = fmt(tp)        + ' ' + cur;
+      })
+      .catch(() => {});
+  });
+
+  // Also set data attributes on current row so it participates in sort and JSON export
+  const curTr = document.getElementById(`cmp-${curWidth}-adj${curAdj}`);
+  if (curTr) {
+    curTr.dataset.price     = data.totalPrice;
+    curTr.dataset.tubeMm    = curWidth;
+    curTr.dataset.adj       = curAdj;
+    curTr.dataset.widthCm   = data.signWidthCm;
+    curTr.dataset.heightCm  = data.signHeightCm;
+    curTr.dataset.lengthM   = data.lengthM;
+    curTr.dataset.powerW    = data.powerW;
+    curTr.dataset.coverM2   = data.coverAreaM2;
+    curTr.dataset.signM2    = ((data.signWidthMm / 1000) * (data.signHeightMm / 1000)).toFixed(4);
+    curTr.dataset.threshold = data.threshold;
+  }
+
+  Promise.all(fetchAll).then(() => {
+    const rows = [...tbody.querySelectorAll('tr')];
+    rows.sort((a, b) => {
+      const pa = parseFloat(a.dataset.price) || Infinity;
+      const pb = parseFloat(b.dataset.price) || Infinity;
+      return pa - pb;
+    });
+    rows.forEach(r => tbody.appendChild(r));
+
+    // Upload all viz images to Directus in parallel
+    rows.forEach(r => uploadVizToDirectus(r));
+  });
+}
+
+async function analyze() {
+  if (!currentFile) return;
+
+  showState('stateLoading');
+  startStepAnim();
+  document.getElementById('analyzeBtn').disabled = true;
+
+  // Preview original
+  if (currentObjUrl) URL.revokeObjectURL(currentObjUrl);
+  currentObjUrl = URL.createObjectURL(currentFile);
+  document.getElementById('imgOriginal').src = currentObjUrl;
+
+  const coverEnabled = true;
+  const form = new FormData();
+  form.append('image',           currentFile);
+  form.append('tubeWidthMm',     document.getElementById('tubeWidth').value);
+  form.append('pricePerMeter',   document.getElementById('pricePerMeter').value);
+  form.append('markup',          document.getElementById('markup').value);
+  form.append('threshAdjust',    document.getElementById('threshAdjust').value);
+  form.append('pricePerM2Cover', coverEnabled ? document.getElementById('pricePerM2Cover').value : '0');
+  form.append('thicknessAdjust', document.getElementById('thicknessAdjust').value);
+
+  try {
+    const resp = await fetch('/analyze', { method: 'POST', body: form });
+    const data = await resp.json();
+    stopStepAnim();
+
+    if (!data.ok) {
+      document.getElementById('errorMsg').textContent = data.error;
+      showState('stateError');
+      return;
+    }
+
+    const cur = document.getElementById('currency').value;
+    const fmt = n => Math.round(n).toLocaleString('ru-RU');
+    const fmtDim = n => (n / 10).toFixed(1); // mm → cm
+
+    // Tube length
+    document.getElementById('rLengthM').textContent  = data.lengthM;
+    document.getElementById('rLengthCm').textContent = data.lengthCm;
+    document.getElementById('rWidthPx').textContent  = data.avgWidthPx;
+    document.getElementById('rThresh').textContent   = data.threshold;
+    document.getElementById('rThreshMethod').textContent =
+      'multi-otsu' + (data.threshAdjust ? (data.threshAdjust > 0 ? ' +' : ' ') + data.threshAdjust : '');
+
+    // Sign dimensions
+    document.getElementById('rSignWidth').textContent  = data.signWidthCm;
+    document.getElementById('rSignHeight').textContent = data.signHeightCm;
+    const signAreaM2 = (data.signWidthMm / 1000) * (data.signHeightMm / 1000);
+    document.getElementById('rSignArea').textContent   = signAreaM2.toFixed(4);
+
+    // Cover
+    const coverEnabled2 = true;
+    document.getElementById('rCoverArea').textContent    = data.coverAreaM2;
+    document.getElementById('rCoverPrice').textContent   = fmt(data.coverPrice);
+    document.getElementById('rCoverCur').textContent     = cur;
+    document.getElementById('rCoverMarginPx').textContent = data.marginPx;
+    document.getElementById('rCoverMarginLabel').textContent =
+      `(by outline, auto +${data.coverMarginMm} mm = 4% of size)`;
+
+    // Price
+    const markup = document.getElementById('markup').value;
+    const hasCover = coverEnabled2 && data.coverPrice > 0;
+    let priceBreak = `Neon: ${fmt(data.tubePrice)} ${cur}`;
+    if (hasCover) priceBreak += ` + cover: ${fmt(data.coverPrice)} ${cur}`;
+    priceBreak += ` + markup ${markup}%`;
+    document.getElementById('rPriceTotal').textContent = fmt(data.totalPrice) + ' ' + cur;
+    document.getElementById('rPriceBreak').textContent = priceBreak;
+
+    // Power + electricity cost
+    const hoursPerDay  = parseFloat(document.getElementById('hoursPerDay').value) || 12;
+    const pricePerKWh  = parseFloat(document.getElementById('pricePerKWh').value) || 0;
+    const kWhPerDay    = data.powerKW * hoursPerDay;
+    const elecCostDay  = kWhPerDay * pricePerKWh;
+    const elecCostMonth = elecCostDay * 30;
+
+    document.getElementById('rPowerW').textContent        = data.powerW;
+    document.getElementById('rPowerDay').textContent      = kWhPerDay.toFixed(2);
+    document.getElementById('rPowerDayLabel').textContent = `At ${hoursPerDay}h/day`;
+    document.getElementById('rElecDay').textContent       = fmt(elecCostDay);
+    document.getElementById('rElecDayCur').textContent    = cur + '/day';
+    document.getElementById('rElecMonth').textContent     = fmt(elecCostMonth);
+    document.getElementById('rElecMonthCur').textContent  = cur + '/month';
+
+    // Comparison table
+    buildComparisonTable(data, cur);
+
+    document.getElementById('imgViz').src     = 'data:image/webp;base64,' + data.vizBase64;
+    document.getElementById('imgOverlay').src = 'data:image/png;base64,' + data.overlayBase64;
+
+    document.getElementById('debugCard').innerHTML =
+      `<strong>Image:</strong> ${data.imageWidth}×${data.imageHeight} px &nbsp;|&nbsp; ` +
+      `<strong>Bright px:</strong> ${data.brightPixels.toLocaleString()} &nbsp;|&nbsp; ` +
+      `<strong>Skeleton px:</strong> ${data.skelPixels.toLocaleString()}<br>` +
+      `<strong>Tube width:</strong> ${data.avgWidthPx} px → ` +
+      `<strong>Scale:</strong> ${data.mmPerPx} mm/px &nbsp;|&nbsp; ` +
+      `<strong>Length:</strong> ${data.lengthMm} mm<br>` +
+      `<strong>Sign:</strong> ${data.signWidthMm} × ${data.signHeightMm} mm &nbsp;|&nbsp; ` +
+      `<strong>Acrylic by outline:</strong> ${data.coverAreaM2} m² (margin +${data.coverMarginMm} mm = ${data.marginPx} px) &nbsp;|&nbsp; ` +
+      `<strong>Power:</strong> ${data.powerW} W`;
+
+    showState('stateResult');
+  } catch (err) {
+    stopStepAnim();
+    document.getElementById('errorMsg').textContent = 'Network error: ' + err.message;
+    showState('stateError');
+  } finally {
+    document.getElementById('analyzeBtn').disabled = false;
+  }
+}
+
+// ── Directus upload ──────────────────────────────────────────────────
+async function uploadVizToDirectus(tr) {
+  const img = tr.querySelector('.cmp-prev img');
+  if (!img) return;
+  try {
+    const blob = await (await fetch(img.src)).blob();
+    const form = new FormData();
+    form.append('image', blob, 'viz.webp');
+    const res  = await fetch('/upload-viz', { method: 'POST', body: form });
+    const d    = await res.json();
+    if (d.ok) tr.dataset.sizePreviewUrl = d.url;
+  } catch {}
+}
+
+// ── Lightbox ─────────────────────────────────────────────────────────
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('active');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.getElementById('lightboxImg').src = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// ── Copy comparison table as JSON ────────────────────────────────────
+function copyTableJson() {
+  const rows = [...document.querySelectorAll('#cmpBody tr')];
+  const data = rows.map(tr => ({
+    size_preview:        tr.dataset.sizePreviewUrl || null,
+    tube_mm:             parseFloat(tr.dataset.tubeMm),
+    adjustment:          parseFloat(tr.dataset.adj),
+    width_cm:            parseFloat(tr.dataset.widthCm)  || null,
+    height_cm:           parseFloat(tr.dataset.heightCm) || null,
+    led_length_m:        parseFloat(tr.dataset.lengthM)  || null,
+    power_w:             parseFloat(tr.dataset.powerW)   || null,
+    area_m2:             parseFloat(tr.dataset.signM2)   || null,
+    used_otsu_threshold: parseInt(tr.dataset.threshold)  || null,
+  }));
+
+  navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(() => {
+    const btn = document.getElementById('btnCopyJson');
+    const prev = btn.textContent;
+    btn.textContent = '✓ Copied';
+    btn.style.color = '#7ddd50';
+    btn.style.borderColor = '#2a4020';
+    setTimeout(() => {
+      btn.textContent = prev;
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 2000);
+  }).catch(() => {
+    alert('Failed to copy. Please allow clipboard access.');
+  });
+}
+</script>
+</body>
+</html>

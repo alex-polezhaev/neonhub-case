@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#121624"/>
+      <stop offset="1" stop-color="#05070b"/>
+    </linearGradient>
+    <linearGradient id="line" x1="18" y1="44" x2="46" y2="20" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b8ff6a"/>
+      <stop offset="1" stop-color="#39ff14"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2.2" flood-color="#39ff14" flood-opacity="0.65"/>
+    </filter>
+  </defs>
+
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#bg)"/>
+  <rect x="4.5" y="4.5" width="55" height="55" rx="15.5" fill="none" stroke="#39ff14" stroke-opacity="0.18"/>
+
+  <g opacity="0.4">
+    <rect x="16" y="34" width="4" height="10" rx="2" fill="#7a8599"/>
+    <rect x="22" y="28" width="4" height="16" rx="2" fill="#7a8599"/>
+    <rect x="28" y="22" width="4" height="22" rx="2" fill="#7a8599"/>
+  </g>
+
+  <g filter="url(#glow)">
+    <path d="M18 41H29V23H46" fill="none" stroke="url(#line)" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+    <circle cx="29" cy="23" r="3.5" fill="#39ff14"/>
+  </g>
+</svg>

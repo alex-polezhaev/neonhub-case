@@ -1,0 +1,18 @@
+{
+  "name": "neonhub-groove-analyser",
+  "version": "1.0.0",
+  "description": "Analyse routed-groove SVG files for flex-neon signs: per-groove length, LED cut marks, and a serial power-wiring plan (endpoint graph + Dijkstra shortest paths + greedy nearest-neighbour chaining).",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["neon", "led", "svg", "groove", "dijkstra", "wiring"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.2.1",
+    "multer": "^2.1.1",
+    "svg-path-properties": "^2.0.2",
+    "svgson": "^5.3.1"
+  }
+}

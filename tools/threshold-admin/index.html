@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0a0a10">
+<title>Neon Threshold Admin</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #0a0a10;
+  color: #d8d8e8;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+/* ── Header ─────────────────────────────────── */
+.header {
+  background: #10101a;
+  border-bottom: 1px solid #1e1e30;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+.header-dot {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #39ff14;
+  box-shadow: 0 0 14px #39ff1466;
+  flex-shrink: 0;
+}
+.header h1 { font-size: 0.95rem; font-weight: 600; color: #fff; }
+.header p  { font-size: 0.72rem; color: #555; }
+.header-status {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #333;
+}
+.status-dot.ok    { background: #39ff14; box-shadow: 0 0 6px #39ff1488; }
+.status-dot.error { background: #ff4444; }
+.status-dot.loading { background: #f7b731; animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ── Layout ─────────────────────────────────── */
+.layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  min-height: 0;
+}
+
+/* ── Sidebar ─────────────────────────────────── */
+.sidebar {
+  background: #0d0d18;
+  border-right: 1px solid #1e1e30;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.sidebar-top {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #1e1e30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sidebar-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #444;
+}
+.product-count {
+  font-size: 0.7rem;
+  color: #555;
+  background: #151525;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.product-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 0;
+}
+.product-list::-webkit-scrollbar { width: 4px; }
+.product-list::-webkit-scrollbar-track { background: transparent; }
+.product-list::-webkit-scrollbar-thumb { background: #252535; border-radius: 2px; }
+
+.product-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background .12s;
+  position: relative;
+}
+.product-item:hover { background: #12121e; }
+.product-item.active {
+  background: #13131f;
+  border-left-color: #39ff14;
+}
+.product-thumb {
+  width: 44px; height: 44px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #08080e;
+  flex-shrink: 0;
+  border: 1px solid #1e1e30;
+}
+.product-info { flex: 1; min-width: 0; }
+.product-name {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #ccc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.product-slug {
+  font-size: 0.68rem;
+  color: #444;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+.product-badges {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+.badge {
+  font-size: 0.62rem;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+.badge-color {
+  background: #1a1a2a;
+  color: #888;
+  border: 1px solid #252535;
+}
+.badge-saved {
+  background: #0a1f0a;
+  color: #39ff14;
+  border: 1px solid #1a3a1a;
+}
+.badge-unsaved {
+  background: #1a1000;
+  color: #f7a030;
+  border: 1px solid #3a2500;
+}
+.save-indicator {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #252535;
+  flex-shrink: 0;
+}
+.save-indicator.saved  { background: #39ff14; box-shadow: 0 0 6px #39ff1488; }
+.save-indicator.unsaved{ background: #f7a030; }
+
+/* ── Main ─────────────────────────────────── */
+.main {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Empty state */
+.empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.75rem;
+  opacity: 0.3;
+}
+.empty-icon { font-size: 3.5rem; }
+.empty-text { font-size: 0.85rem; color: #666; }
+
+/* Editor */
+.editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.editor-header {
+  padding: 0.9rem 1.5rem;
+  border-bottom: 1px solid #1e1e30;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.editor-name { font-size: 1rem; font-weight: 600; color: #fff; }
+.editor-meta { font-size: 0.75rem; color: #555; }
+
+.editor-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  min-height: 0;
+}
+
+/* Canvas area */
+.canvas-area {
+  position: relative;
+  background: #06060e;
+  overflow: hidden;
+}
+.canvas-scroll {
+  width: 100%; height: 100%;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.canvas-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.canvas-scroll::-webkit-scrollbar-track { background: transparent; }
+.canvas-scroll::-webkit-scrollbar-thumb { background: #252535; border-radius: 3px; }
+#threshCanvas {
+  display: block;
+  flex-shrink: 0;
+}
+.eraser-toolbar {
+  position: absolute;
+  top: 12px; left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 10;
+}
+.eraser-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: #000000cc;
+  border: 1px solid #2a2a40;
+  border-radius: 20px;
+  color: #888;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: color .12s, border-color .12s;
+  white-space: nowrap;
+}
+.eraser-toggle:hover { color: #ccc; }
+.eraser-toggle.active { color: #fff; border-color: #f7a030; background: #1a1000cc; }
+.eraser-sub {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #000000cc;
+  border: 1px solid #2a2a40;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.eraser-clear {
+  padding: 0 12px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-left: 1px solid #2a2a40;
+  color: #ff5555;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: color .12s;
+}
+.eraser-clear:hover { color: #ff8888; }
+.canvas-scroll.erasing { cursor: none; }
+.eraser-cursor {
+  position: absolute;
+  border: 1.5px solid #f7a030;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 20;
+  display: none;
+  transform: translate(-50%, -50%);
+}
+.zoom-controls {
+  position: absolute;
+  bottom: 12px; left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #000000cc;
+  border: 1px solid #2a2a40;
+  border-radius: 20px;
+  overflow: hidden;
+  z-index: 10;
+}
+.zoom-btn {
+  width: 32px; height: 32px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color .12s, background .12s;
+}
+.zoom-btn:hover { background: #1a1a2a; color: #fff; }
+.zoom-label {
+  font-size: 0.72rem;
+  color: #777;
+  font-family: monospace;
+  min-width: 42px;
+  text-align: center;
+  user-select: none;
+}
+.canvas-overlay-badge {
+  position: absolute;
+  top: 12px; right: 12px;
+  z-index: 10;
+  pointer-events: none;
+  background: #000000cc;
+  color: #39ff14;
+  border: 1px solid #39ff1444;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-family: monospace;
+}
+.canvas-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #06060eee;
+  font-size: 0.82rem;
+  color: #555;
+  z-index: 5;
+}
+
+/* Controls panel */
+.controls-panel {
+  background: #0d0d18;
+  border-left: 1px solid #1e1e30;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: auto;
+}
+.ctrl-section {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #131320;
+}
+.ctrl-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #444;
+  margin-bottom: 0.75rem;
+}
+.ctrl-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #39ff14;
+  font-family: monospace;
+  line-height: 1;
+}
+.ctrl-sub {
+  font-size: 0.72rem;
+  color: #555;
+  margin-top: 4px;
+}
+
+.slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.slider-edge { font-size: 0.7rem; color: #333; min-width: 24px; text-align: center; }
+input[type=range] {
+  flex: 1;
+  height: 6px;
+  -webkit-appearance: none;
+  background: #1e1e30;
+  border-radius: 3px;
+  outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #39ff14;
+  cursor: pointer;
+  box-shadow: 0 0 10px #39ff1466;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #0e0e1a;
+  font-size: 0.78rem;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row .k { color: #555; }
+.info-row .v { color: #aaa; font-family: monospace; }
+
+.img-thumbs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.img-thumb-btn {
+  width: 56px; height: 42px;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  background: none;
+  flex-shrink: 0;
+}
+.img-thumb-btn.active { border-color: #39ff14; }
+.img-thumb-btn img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.color-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+.color-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  background: var(--c);
+  cursor: pointer;
+  transition: border-color .15s, transform .1s;
+  flex-shrink: 0;
+  outline: none;
+}
+.color-btn:hover { transform: scale(1.1); }
+.color-btn.active { border-color: #fff; }
+
+.btn-save {
+  width: 100%;
+  padding: 12px;
+  background: #39ff14;
+  color: #050a05;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+  margin-top: 4px;
+}
+.btn-save:hover { opacity: 0.88; }
+.btn-save:active { transform: scale(0.98); }
+.btn-save:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.save-status {
+  text-align: center;
+  font-size: 0.75rem;
+  margin-top: 8px;
+  min-height: 18px;
+  color: #555;
+}
+.save-status.ok    { color: #39ff14; }
+.save-status.error { color: #ff5555; }
+
+/* Loading skeleton */
+.skeleton {
+  background: linear-gradient(90deg, #111120 25%, #161628 50%, #111120 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius: 4px;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.skel-item {
+  height: 60px;
+  margin: 6px 10px;
+  border-radius: 8px;
+}
+.sidebar-search {
+  padding: 6px 10px;
+  border-bottom: 1px solid #1e1e30;
+  flex-shrink: 0;
+}
+.sidebar-search input {
+  width: 100%;
+  background: #0a0a14;
+  border: 1px solid #1e1e30;
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: #ccc;
+  font-size: 0.78rem;
+  outline: none;
+  transition: border-color .12s;
+}
+.sidebar-search input::placeholder { color: #333; }
+.sidebar-search input:focus { border-color: #39ff1466; }
+.filter-btn {
+  font-size: 0.68rem;
+  padding: 3px 9px;
+  border-radius: 10px;
+  border: 1px solid #252535;
+  background: none;
+  color: #555;
+  cursor: pointer;
+  transition: color .12s, border-color .12s, background .12s;
+  white-space: nowrap;
+}
+.filter-btn.active {
+  background: #1a1000;
+  border-color: #f7a030;
+  color: #f7a030;
+}
+<!-- UI styles -->
+</style>
+</head>
+<body>
+
+<!-- App Header -->
+<header class="header">
+  <div class="header-dot"></div>
+  <div>
+    <h1>Neon Threshold Admin</h1>
+    <p>Per-product brightness threshold tuning</p>
+  </div>
+  <a href="price-update.html" style="margin-left:auto;font-size:0.78rem;color:#444;text-decoration:none;padding:4px 12px;border:1px solid #252535;border-radius:6px;transition:color .12s,border-color .12s" onmouseover="this.style.color='#aaa'" onmouseout="this.style.color='#444'">Price Generator →</a>
+  <div class="header-status">
+    <div class="status-dot" id="apiDot"></div>
+    <span id="apiStatus">Loading...</span>
+  </div>
+</header>
+
+<!-- App Layout -->
+<div class="layout">
+
+  <!-- Product Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-label">Products</div>
+      <button class="filter-btn" id="filterBtn" onclick="toggleFilter()">no threshold</button>
+      <div class="product-count" id="productCount">—</div>
+    </div>
+
+    <div class="sidebar-search">
+      <input type="text" id="searchInput" placeholder="Search by slug..." oninput="renderList()">
+    </div>
+
+    <div class="product-list" id="productList">
+      <!-- Loading Skeleton -->
+      <div class="skel-item skeleton"></div>
+      <div class="skel-item skeleton"></div>
+      <div class="skel-item skeleton"></div>
+      <div class="skel-item skeleton"></div>
+    </div>
+  </aside>
+
+  <!-- Threshold Workspace -->
+  <main class="main" id="mainArea">
+    <!-- Empty State -->
+    <section class="empty-state" id="emptyState">
+      <div class="empty-icon">💡</div>
+      <div class="empty-text">Select a product to tune its threshold</div>
+    </section>
+
+    <!-- Editor -->
+    <section class="editor" id="editor" style="display:none">
+      <!-- Product Header -->
+      <div class="editor-header">
+        <div>
+          <div class="editor-name" id="editorName">—</div>
+          <div class="editor-meta" id="editorMeta">—</div>
+        </div>
+      </div>
+
+      <div class="editor-body">
+        <!-- Canvas Workspace -->
+        <section class="canvas-area">
+          <div class="canvas-scroll" id="canvasScroll">
+            <canvas id="threshCanvas"></canvas>
+          </div>
+
+          <div class="canvas-overlay-badge" id="canvasBadge">—</div>
+          <div class="canvas-loading" id="canvasLoading">Loading image...</div>
+          <div class="eraser-cursor" id="eraserCursor"></div>
+
+          <!-- Canvas Tools -->
+          <div class="eraser-toolbar">
+            <button class="eraser-toggle" id="eraserToggle" onclick="toggleEraser()">◯ Eraser</button>
+            <div class="eraser-sub" id="eraserSub" style="display:none">
+              <button class="zoom-btn" onclick="changeBrush(-1)">−</button>
+              <span class="zoom-label" id="brushLabel">20</span>
+              <button class="zoom-btn" onclick="changeBrush(+1)">+</button>
+              <button class="eraser-clear" onclick="clearErase()">reset</button>
+            </div>
+          </div>
+
+          <div class="zoom-controls">
+            <button class="zoom-btn" onclick="changeZoom(-1)" title="Zoom out">−</button>
+            <span class="zoom-label" id="zoomLabel">100%</span>
+            <button class="zoom-btn" onclick="changeZoom(+1)" title="Zoom in">+</button>
+            <button class="zoom-btn" onclick="changeZoom(0)" title="Fit to window" style="font-size:0.8rem;width:36px">fit</button>
+          </div>
+        </section>
+
+        <!-- Inspector Panel -->
+        <aside class="controls-panel">
+          <!-- Overlay Color -->
+          <div class="ctrl-section">
+            <div class="ctrl-label">Visualization color</div>
+            <div class="color-btns" id="colorBtns">
+              <button class="color-btn active" data-color="39ff14" style="--c:#39ff14" title="Green"></button>
+              <button class="color-btn" data-color="ff2222" style="--c:#ff2222" title="Red"></button>
+              <button class="color-btn" data-color="000000" style="--c:#000000" title="Black"></button>
+            </div>
+          </div>
+
+          <!-- Server Threshold -->
+          <div class="ctrl-section" id="serverThreshSection" style="display:none">
+            <div class="ctrl-label">Server threshold</div>
+            <div style="display:flex;align-items:baseline;gap:10px">
+              <div class="ctrl-value" id="ctrlServerThresh" style="color:#f7a030">—</div>
+              <button onclick="applyServerThresh()" style="font-size:0.72rem;padding:3px 10px;background:#1a1000;border:1px solid #3a2500;border-radius:4px;color:#f7a030;cursor:pointer">apply</button>
+            </div>
+          </div>
+
+          <!-- Threshold Controls -->
+          <div class="ctrl-section">
+            <div class="ctrl-label">Final threshold</div>
+            <div class="ctrl-value" id="ctrlThresh">—</div>
+            <div class="ctrl-sub">Auto Multi-Otsu: <span id="ctrlAuto">—</span></div>
+
+            <div class="slider-wrap">
+              <span class="slider-edge">−150</span>
+              <input type="range" id="adjSlider" min="-150" max="150" step="1" value="0">
+              <span class="slider-edge">+150</span>
+            </div>
+            <div style="text-align:center;font-size:0.75rem;color:#555;margin-top:6px">
+              Correction: <span id="adjLabel">0</span>
+            </div>
+          </div>
+
+          <!-- Product Details -->
+          <div class="ctrl-section">
+            <div class="ctrl-label">Product data</div>
+            <div id="productInfoRows"></div>
+          </div>
+
+          <!-- Save Action -->
+          <div class="ctrl-section">
+            <button class="btn-save" id="btnSave" onclick="saveThreshold()">
+              Save threshold →
+            </button>
+            <div class="save-status" id="saveStatus"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Dependencies -->
+<script src="threshold-browser.js"></script>
+
+<!-- App Logic -->
+<script>
+const API_URL  = 'https://n8n.example.com/webhook/neon/products/website';
+const HUB_ORIGIN = 'https://directus.example.com';
+const PROXY    = (url) => `/api/proxy?url=${encodeURIComponent(url)}`;
+const FALLBACK_THUMB = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44">
+    <rect width="44" height="44" rx="6" fill="#08080e"/>
+    <path d="M12 30l7-7 5 5 4-4 4 6H12z" fill="#252535"/>
+    <circle cx="17" cy="16" r="3" fill="#2f2f44"/>
+  </svg>
+`);
+
+function extractImageUrl(image) {
+  if (typeof image === 'string') return image;
+  if (!image || typeof image !== 'object') return '';
+  return image.url || image.src || image.href || image.image || '';
+}
+
+function normalizeImageUrl(url) {
+  const value = typeof url === 'string' ? url.trim() : '';
+  if (!value) return null;
+
+  try {
+    return new URL(value).toString();
+  } catch (_) {
+    try {
+      return new URL(value, HUB_ORIGIN).toString();
+    } catch (_) {
+      return null;
+    }
+  }
+}
+
+function getProductImage(product) {
+  const images = Array.isArray(product?.images) ? product.images : [];
+  for (const image of images) {
+    const normalized = normalizeImageUrl(extractImageUrl(image));
+    if (normalized) return normalized;
+  }
+  return null;
+}
+
+const IMG_URL  = (url) => {
+  const normalized = normalizeImageUrl(url);
+  if (!normalized) return FALLBACK_THUMB;
+
+  const u = new URL(normalized);
+  u.searchParams.set('width',   '1000');
+  u.searchParams.set('height',  '1000');
+  u.searchParams.set('fit',     'inside');
+  u.searchParams.set('quality', '100');
+  return PROXY(u.toString());
+};
+
+let products        = []; // all from API
+let displayProducts = []; // one per group (first by slug alphabetically)
+let currentProduct  = null;
+let currentResult   = null;
+let savedThresholds = {}; // slug → { thresh_adjust, final_thresh }
+let filterNoThresh  = false;
+
+function toggleFilter() {
+  filterNoThresh = !filterNoThresh;
+  document.getElementById('filterBtn').classList.toggle('active', filterNoThresh);
+  renderList();
+}
+
+function filteredProducts() {
+  const query = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+  return displayProducts.filter(p => {
+    if (filterNoThresh && p._serverThresh !== null && p._serverThresh !== undefined) return false;
+    if (query && !p.slug.toLowerCase().includes(query)) return false;
+    return true;
+  });
+}
+
+const ZOOM_STEPS = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0, 4.0];
+let currentZoom = 1.0;
+
+function applyZoom() {
+  const canvas = document.getElementById('threshCanvas');
+  if (!canvas.width) return;
+  canvas.style.width  = Math.round(canvas.width  * currentZoom) + 'px';
+  canvas.style.height = Math.round(canvas.height * currentZoom) + 'px';
+  document.getElementById('zoomLabel').textContent = Math.round(currentZoom * 100) + '%';
+}
+
+function fitZoom() {
+  const canvas = document.getElementById('threshCanvas');
+  const scroll = document.getElementById('canvasScroll');
+  if (!canvas.width || !scroll.clientWidth) return;
+  const fit = Math.min(
+    (scroll.clientWidth  - 24) / canvas.width,
+    (scroll.clientHeight - 24) / canvas.height
+  );
+  currentZoom = Math.round(fit * 100) / 100;
+  localStorage.setItem('neon-admin-zoom', currentZoom);
+  applyZoom();
+}
+
+function changeZoom(dir) {
+  if (dir === 0) { fitZoom(); return; }
+  // Find nearest step >= currentZoom when going up, <= when going down
+  let idx = ZOOM_STEPS.findIndex(s => Math.abs(s - currentZoom) < 0.01);
+  if (idx === -1) {
+    idx = dir > 0
+      ? ZOOM_STEPS.findIndex(s => s > currentZoom)
+      : ZOOM_STEPS.slice().reverse().findIndex(s => s < currentZoom);
+    if (idx === -1) idx = dir > 0 ? ZOOM_STEPS.length - 1 : 0;
+    else if (dir < 0) idx = ZOOM_STEPS.length - 1 - idx;
+  } else {
+    idx = Math.max(0, Math.min(ZOOM_STEPS.length - 1, idx + dir));
+  }
+  currentZoom = ZOOM_STEPS[idx];
+  localStorage.setItem('neon-admin-zoom', currentZoom);
+  applyZoom();
+}
+
+// ── Load products ────────────────────────────────────────────────────────────
+async function loadProducts() {
+  setApiStatus('loading', 'Loading...');
+  try {
+    const resp = await fetch(API_URL);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const json = await resp.json();
+    products = json.products || json;
+
+    // Group by group_id, take the first slug alphabetically from each group
+    const groups = {};
+    products.forEach(p => {
+      const gid = p.group_id || p.slug;
+      if (!groups[gid]) groups[gid] = [];
+      groups[gid].push(p);
+    });
+    displayProducts = Object.values(groups).map(group => {
+      const sorted = group.slice().sort((a, b) => a.slug.localeCompare(b.slug));
+      const rep = sorted[0];
+      // Take the first saved threshold from the group (alphabetically)
+      const serverThresh = sorted.reduce((acc, p) => {
+        if (acc !== null) return acc;
+        const t = p.otsu_threshold ?? p.final_thresh ?? null;
+        const n = t !== null && t !== undefined ? Number(t) : null;
+        return n !== null && n !== 0 ? n : null;
+      }, null);
+      rep._serverThresh = serverThresh;
+      // Pre-fill savedThresholds so the badge shows immediately
+      if (serverThresh !== null) {
+        savedThresholds[rep.slug] = savedThresholds[rep.slug] || { final_thresh: serverThresh };
+      }
+      return rep;
+    }).sort((a, b) => a.slug.localeCompare(b.slug));
+
+    renderList();
+    setApiStatus('ok', `${displayProducts.length} groups`);
+  } catch (e) {
+    setApiStatus('error', 'Load error');
+    document.getElementById('productList').innerHTML =
+      `<div style="padding:1rem;font-size:0.78rem;color:#ff5555">Error: ${e.message}</div>`;
+  }
+}
+
+function setApiStatus(state, text) {
+  const dot = document.getElementById('apiDot');
+  dot.className = 'status-dot ' + state;
+  document.getElementById('apiStatus').textContent = text;
+}
+
+// ── Render sidebar list ───────────────────────────────────────────────────────
+function renderList() {
+  const list = document.getElementById('productList');
+  list.innerHTML = '';
+  const visible = filteredProducts();
+  document.getElementById('productCount').textContent =
+    filterNoThresh ? `${visible.length} / ${displayProducts.length}` : displayProducts.length;
+  visible.forEach((p, i) => {
+    const saved = savedThresholds[p.slug];
+    const thumbUrl = getProductImage(p);
+    const el = document.createElement('div');
+    el.className = 'product-item';
+    el.dataset.slug = p.slug;
+    el.innerHTML = `
+      <img class="product-thumb" src="${IMG_URL(thumbUrl)}" alt="${p.name}" loading="lazy">
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-slug">${p.slug}</div>
+        <div class="product-badges">
+          ${[].concat(p.color||[]).map(c=>`<span class="badge badge-color">${c}</span>`).join('')}
+          ${saved
+            ? `<span class="badge badge-saved">threshold ${saved.final_thresh}</span>`
+            : `<span class="badge badge-unsaved">not saved</span>`}
+        </div>
+      </div>
+      <div class="save-indicator ${saved ? 'saved' : 'unsaved'}"></div>
+    `;
+    el.addEventListener('click', () => selectProduct(p.slug));
+    list.appendChild(el);
+  });
+}
+
+// ── Select product ────────────────────────────────────────────────────────────
+function selectProduct(slug) {
+  currentProduct = displayProducts.find(p => p.slug === slug);
+  if (!currentProduct) return;
+
+  document.querySelectorAll('.product-item').forEach(el =>
+    el.classList.toggle('active', el.dataset.slug === slug)
+  );
+  currentImgIdx  = 0;
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('editor').style.display = 'flex';
+
+  // Header
+  document.getElementById('editorName').textContent = currentProduct.name;
+  document.getElementById('editorMeta').textContent =
+    `${[].concat(currentProduct.color||[]).join(', ')} · ${currentProduct.width_cm}×${currentProduct.height_cm} cm · ${currentProduct.slug}`;
+
+  // Restore saved adjust if any
+  const saved = savedThresholds[currentProduct.slug];
+  const adj = saved ? saved.thresh_adjust : 0;
+  document.getElementById('adjSlider').value = adj;
+  document.getElementById('adjLabel').textContent = adj > 0 ? '+' + adj : adj;
+
+  // Product info rows
+  const infoEl = document.getElementById('productInfoRows');
+  const rows = [
+    ['Dimensions', `${currentProduct.width_cm}×${currentProduct.height_cm} cm`],
+    ['Price /10cm', currentProduct.price_per_10cm ? `${currentProduct.price_per_10cm} ₽` : '—'],
+    ['Discount', currentProduct.sale_percent ? `${currentProduct.sale_percent}%` : '—'],
+    ['Categories', (currentProduct.categories||[]).join(', ')],
+    ['Clothing sizes', (currentProduct.sizes||[]).join(', ')],
+  ];
+  infoEl.innerHTML = rows.map(([k,v]) =>
+    `<div class="info-row"><span class="k">${k}</span><span class="v">${v}</span></div>`
+  ).join('');
+
+  document.getElementById('saveStatus').textContent = '';
+  document.getElementById('saveStatus').className = 'save-status';
+
+  // Show the server threshold if present
+  const serverThreshSection = document.getElementById('serverThreshSection');
+  const serverThresh = currentProduct._serverThresh;
+  if (serverThresh !== null && serverThresh !== undefined) {
+    serverThreshSection.style.display = 'block';
+    document.getElementById('ctrlServerThresh').textContent = serverThresh;
+  } else {
+    serverThreshSection.style.display = 'none';
+  }
+
+  loadImageAndDraw(getProductImage(currentProduct));
+}
+
+// ── Load image → draw overlay ─────────────────────────────────────────────────
+function loadImageAndDraw(imageUrl) {
+  const canvas  = document.getElementById('threshCanvas');
+  const loading = document.getElementById('canvasLoading');
+  const normalizedUrl = normalizeImageUrl(imageUrl);
+  loading.textContent = 'Loading image...';
+  loading.style.display = 'flex';
+  canvas.style.display  = 'none';
+  currentResult = null;
+  eraseMask     = null;
+
+  if (!normalizedUrl) {
+    loading.textContent = 'Product has no valid image';
+    return;
+  }
+
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    // Get ImageData via offscreen canvas
+    const off = document.createElement('canvas');
+    off.width = img.naturalWidth; off.height = img.naturalHeight;
+    off.getContext('2d').drawImage(img, 0, 0);
+    const imgData = off.getContext('2d').getImageData(0, 0, img.naturalWidth, img.naturalHeight);
+
+    redraw(imgData);
+
+    // Apply the saved server threshold: compute the needed correction
+    const st = currentProduct._serverThresh;
+    if (st !== null && st !== undefined && currentResult) {
+      const adj = Math.max(-150, Math.min(150, st - currentResult.autoThresh));
+      document.getElementById('adjSlider').value = adj;
+      document.getElementById('adjLabel').textContent = adj > 0 ? '+' + adj : adj;
+      redraw();
+    }
+
+    eraseMask = new Uint8Array(currentResult.W * currentResult.H);
+    loading.style.display = 'none';
+    canvas.style.display  = 'block';
+    fitZoom();
+  };
+  img.onerror = () => {
+    loading.textContent = 'Image load error';
+  };
+  img.src = IMG_URL(normalizedUrl);
+}
+
+function getOverlayColor() {
+  const active = document.querySelector('.color-btn.active');
+  const hex = active ? active.dataset.color : '39ff14';
+  return [
+    parseInt(hex.slice(0,2),16),
+    parseInt(hex.slice(2,4),16),
+    parseInt(hex.slice(4,6),16),
+  ];
+}
+
+function redraw(imgData) {
+  const adj = parseInt(document.getElementById('adjSlider').value) || 0;
+  // Cache imageData for slider changes
+  if (imgData) window._currentImgData = imgData;
+  const data = imgData || window._currentImgData;
+  if (!data) return;
+
+  currentResult = NeonThreshold.analyze(data, adj);
+  const displayMask = applyErase(currentResult.mask);
+  NeonThreshold.drawOverlay(
+    document.getElementById('threshCanvas'),
+    currentResult.imageData,
+    displayMask,
+    getOverlayColor()
+  );
+  applyZoom();
+
+  document.getElementById('ctrlThresh').textContent = currentResult.thresh;
+  document.getElementById('ctrlAuto').textContent   = currentResult.autoThresh;
+  document.getElementById('canvasBadge').textContent =
+    `threshold: ${currentResult.thresh}  (auto: ${currentResult.autoThresh})`;
+}
+
+// ── Color buttons ─────────────────────────────────────────────────────────────
+(function restoreColor() {
+  const saved = localStorage.getItem('neon-admin-color');
+  if (!saved) return;
+  document.querySelectorAll('.color-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.color === saved));
+})();
+
+document.getElementById('colorBtns').addEventListener('click', e => {
+  const btn = e.target.closest('.color-btn');
+  if (!btn) return;
+  document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  localStorage.setItem('neon-admin-color', btn.dataset.color);
+  redraw();
+});
+
+// ── Slider ────────────────────────────────────────────────────────────────────
+document.getElementById('adjSlider').addEventListener('input', () => {
+  const v = parseInt(document.getElementById('adjSlider').value);
+  document.getElementById('adjLabel').textContent = v > 0 ? '+' + v : v;
+  redraw();
+});
+
+// ── Apply server threshold ────────────────────────────────────────────────────
+function applyServerThresh() {
+  if (!currentProduct || !currentResult) return;
+  const st = currentProduct._serverThresh;
+  if (st === null || st === undefined) return;
+  const adj = Math.max(-150, Math.min(150, st - currentResult.autoThresh));
+  document.getElementById('adjSlider').value = adj;
+  document.getElementById('adjLabel').textContent = adj > 0 ? '+' + adj : adj;
+  redraw();
+}
+
+// ── Save threshold ────────────────────────────────────────────────────────────
+async function saveThreshold() {
+  if (!currentProduct || !currentResult) return;
+
+  const btn    = document.getElementById('btnSave');
+  const status = document.getElementById('saveStatus');
+  const adj    = parseInt(document.getElementById('adjSlider').value) || 0;
+
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  status.className = 'save-status';
+  status.textContent = '';
+
+  const payload = {
+    group_id:     currentProduct.group_id,
+    final_thresh: currentResult.thresh,
+  };
+
+  try {
+    const resp = await fetch('https://n8n.example.com/webhook/neon/save_otsu_threshold', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+    // Update local state
+    savedThresholds[currentProduct.slug] = {
+      thresh_adjust: adj,
+      final_thresh:  currentResult.thresh,
+    };
+    renderList();
+    // Re-highlight active
+    document.querySelectorAll('.product-item').forEach(el =>
+      el.classList.toggle('active', el.dataset.slug === currentProduct.slug));
+
+    status.className = 'save-status ok';
+    status.textContent = `✓ Saved: threshold ${currentResult.thresh}`;
+    btn.textContent = 'Save threshold →';
+  } catch (e) {
+    status.className = 'save-status error';
+    status.textContent = `Error: ${e.message}`;
+    btn.textContent = 'Save threshold →';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ── Eraser ────────────────────────────────────────────────────────────────────
+let eraseMask   = null; // Uint8Array, same dims as current image
+let isErasing   = false;
+let isMouseDown = false;
+let brushRadius = 20; // canvas pixels
+const BRUSH_STEPS = [3, 6, 10, 20, 35, 60];
+
+function toggleEraser() {
+  isErasing = !isErasing;
+  const btn   = document.getElementById('eraserToggle');
+  const sub   = document.getElementById('eraserSub');
+  const scroll = document.getElementById('canvasScroll');
+  btn.classList.toggle('active', isErasing);
+  btn.textContent = isErasing ? '◯ Eraser on' : '◯ Eraser';
+  sub.style.display = isErasing ? 'flex' : 'none';
+  scroll.classList.toggle('erasing', isErasing);
+  document.getElementById('eraserCursor').style.display = isErasing ? 'block' : 'none';
+}
+
+function changeBrush(dir) {
+  let idx = BRUSH_STEPS.findIndex(s => s >= brushRadius);
+  if (idx === -1) idx = BRUSH_STEPS.length - 1;
+  idx = Math.max(0, Math.min(BRUSH_STEPS.length - 1, idx + dir));
+  brushRadius = BRUSH_STEPS[idx];
+  document.getElementById('brushLabel').textContent = brushRadius;
+}
+
+function clearErase() {
+  if (eraseMask) eraseMask.fill(0);
+  redraw();
+}
+
+function applyErase(mask) {
+  if (!eraseMask) return mask;
+  const out = new Uint8Array(mask.length);
+  for (let i = 0; i < mask.length; i++) out[i] = mask[i] && !eraseMask[i] ? 1 : 0;
+  return out;
+}
+
+function eraseAt(cx, cy) {
+  if (!currentResult || !eraseMask) return;
+  const {W, H} = currentResult;
+  const r = brushRadius;
+  for (let dy = -r; dy <= r; dy++) {
+    for (let dx = -r; dx <= r; dx++) {
+      if (dx*dx + dy*dy <= r*r) {
+        const x = cx+dx, y = cy+dy;
+        if (x >= 0 && x < W && y >= 0 && y < H) eraseMask[y*W+x] = 1;
+      }
+    }
+  }
+  const display = applyErase(currentResult.mask);
+  NeonThreshold.drawOverlay(
+    document.getElementById('threshCanvas'),
+    currentResult.imageData,
+    display,
+    getOverlayColor()
+  );
+  applyZoom();
+}
+
+function getCanvasXY(e) {
+  const canvas = document.getElementById('threshCanvas');
+  const rect   = canvas.getBoundingClientRect();
+  const cx = e.clientX ?? e.touches[0].clientX;
+  const cy = e.clientY ?? e.touches[0].clientY;
+  return {
+    x: Math.round((cx - rect.left) * (canvas.width  / rect.width)),
+    y: Math.round((cy - rect.top)  * (canvas.height / rect.height)),
+  };
+}
+
+function updateEraserCursor(e) {
+  const cursor = document.getElementById('eraserCursor');
+  const area   = document.getElementById('threshCanvas').closest('.canvas-area');
+  const rect   = area.getBoundingClientRect();
+  const cx = e.clientX ?? e.touches[0].clientX;
+  const cy = e.clientY ?? e.touches[0].clientY;
+  const sizePx = brushRadius * 2 * currentZoom;
+  cursor.style.left   = (cx - rect.left) + 'px';
+  cursor.style.top    = (cy - rect.top)  + 'px';
+  cursor.style.width  = sizePx + 'px';
+  cursor.style.height = sizePx + 'px';
+}
+
+(function bindEraser() {
+  const canvas = document.getElementById('threshCanvas');
+
+  canvas.addEventListener('mousedown', e => {
+    if (!isErasing) return;
+    isMouseDown = true;
+    const {x, y} = getCanvasXY(e);
+    eraseAt(x, y);
+  });
+  canvas.addEventListener('mousemove', e => {
+    if (!isErasing) return;
+    updateEraserCursor(e);
+    if (!isMouseDown) return;
+    const {x, y} = getCanvasXY(e);
+    eraseAt(x, y);
+  });
+  document.addEventListener('mouseup', () => { isMouseDown = false; });
+
+  canvas.addEventListener('touchstart', e => {
+    if (!isErasing) return;
+    e.preventDefault();
+    isMouseDown = true;
+    const {x, y} = getCanvasXY(e);
+    eraseAt(x, y);
+  }, { passive: false });
+  canvas.addEventListener('touchmove', e => {
+    if (!isErasing) return;
+    e.preventDefault();
+    updateEraserCursor(e);
+    const {x, y} = getCanvasXY(e);
+    eraseAt(x, y);
+  }, { passive: false });
+  canvas.addEventListener('touchend', () => { isMouseDown = false; });
+})();
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.getElementById('zoomLabel').textContent = Math.round(currentZoom * 100) + '%';
+loadProducts();
+</script>
+</body>
+</html>

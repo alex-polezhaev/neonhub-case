@@ -1,0 +1,2174 @@
+{
+ "products": [
+  {
+   "slug": "open-24-7",
+   "group_id": "open-24-7",
+   "name": "Open 24/7",
+   "categories": [
+    "business"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "open 24/7 neon sign",
+    "business signage neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "red",
+   "images": [
+    "/images/products/open-24-7.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/open-24-7.webp",
+     "tube_mm": 6,
+     "width_cm": 52,
+     "height_cm": 31.2,
+     "width_in": 20.5,
+     "height_in": 12.3,
+     "power_w": 23.4,
+     "adjustment": 0,
+     "area_m2": 0.1622,
+     "led_length_m": 2.34,
+     "price_usd": 195,
+     "price_rub": 17550
+    },
+    {
+     "size_preview": "/images/products/open-24-7.webp",
+     "tube_mm": 8,
+     "width_cm": 69,
+     "height_cm": 41.4,
+     "width_in": 27.2,
+     "height_in": 16.3,
+     "power_w": 31.1,
+     "adjustment": 0,
+     "area_m2": 0.2857,
+     "led_length_m": 3.1,
+     "price_usd": 290,
+     "price_rub": 26100
+    }
+   ],
+   "size_preview": "/images/products/open-24-7.webp",
+   "price_usd": 195,
+   "sale_price_usd": null,
+   "price_rub": 17550,
+   "sale_price_rub": null,
+   "width_cm": 52,
+   "height_cm": 31.2,
+   "width_in": 20.5,
+   "height_in": 12.3,
+   "price_per_10cm": 3375,
+   "price_per_in_usd": 9.51,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "open",
+   "group_id": "open",
+   "name": "Open",
+   "categories": [
+    "business"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "open neon sign",
+    "business signage neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "green",
+   "images": [
+    "/images/products/open.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/open.webp",
+     "tube_mm": 6,
+     "width_cm": 57,
+     "height_cm": 22.8,
+     "width_in": 22.4,
+     "height_in": 9.0,
+     "power_w": 25.7,
+     "adjustment": 0,
+     "area_m2": 0.13,
+     "led_length_m": 2.56,
+     "price_usd": 190,
+     "price_rub": 17100
+    },
+    {
+     "size_preview": "/images/products/open.webp",
+     "tube_mm": 8,
+     "width_cm": 75,
+     "height_cm": 30.0,
+     "width_in": 29.5,
+     "height_in": 11.8,
+     "power_w": 33.8,
+     "adjustment": 0,
+     "area_m2": 0.225,
+     "led_length_m": 3.38,
+     "price_usd": 285,
+     "price_rub": 25650
+    }
+   ],
+   "size_preview": "/images/products/open.webp",
+   "price_usd": 190,
+   "sale_price_usd": null,
+   "price_rub": 17100,
+   "sale_price_rub": null,
+   "width_cm": 57,
+   "height_cm": 22.8,
+   "width_in": 22.4,
+   "height_in": 9.0,
+   "price_per_10cm": 3000,
+   "price_per_in_usd": 8.48,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "coffee",
+   "group_id": "coffee",
+   "name": "Coffee",
+   "categories": [
+    "business"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "coffee neon sign",
+    "business signage neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "orange",
+   "images": [
+    "/images/products/coffee.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/coffee.webp",
+     "tube_mm": 6,
+     "width_cm": 62,
+     "height_cm": 24.8,
+     "width_in": 24.4,
+     "height_in": 9.8,
+     "power_w": 27.9,
+     "adjustment": 0,
+     "area_m2": 0.1538,
+     "led_length_m": 2.79,
+     "price_usd": 200,
+     "price_rub": 18000
+    },
+    {
+     "size_preview": "/images/products/coffee.webp",
+     "tube_mm": 8,
+     "width_cm": 82,
+     "height_cm": 32.8,
+     "width_in": 32.3,
+     "height_in": 12.9,
+     "power_w": 36.9,
+     "adjustment": 0,
+     "area_m2": 0.269,
+     "led_length_m": 3.69,
+     "price_usd": 300,
+     "price_rub": 27000
+    }
+   ],
+   "size_preview": "/images/products/coffee.webp",
+   "price_usd": 200,
+   "sale_price_usd": null,
+   "price_rub": 18000,
+   "sale_price_rub": null,
+   "width_cm": 62,
+   "height_cm": 24.8,
+   "width_in": 24.4,
+   "height_in": 9.8,
+   "price_per_10cm": 2903,
+   "price_per_in_usd": 8.2,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "bakery",
+   "group_id": "bakery",
+   "name": "Bakery",
+   "categories": [
+    "business"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "bakery neon sign",
+    "business signage neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "yellow",
+   "images": [
+    "/images/products/bakery.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/bakery.webp",
+     "tube_mm": 6,
+     "width_cm": 67,
+     "height_cm": 26.8,
+     "width_in": 26.4,
+     "height_in": 10.6,
+     "power_w": 30.2,
+     "adjustment": 0,
+     "area_m2": 0.1796,
+     "led_length_m": 3.01,
+     "price_usd": 210,
+     "price_rub": 18900
+    },
+    {
+     "size_preview": "/images/products/bakery.webp",
+     "tube_mm": 8,
+     "width_cm": 88,
+     "height_cm": 35.2,
+     "width_in": 34.6,
+     "height_in": 13.9,
+     "power_w": 39.6,
+     "adjustment": 0,
+     "area_m2": 0.3098,
+     "led_length_m": 3.96,
+     "price_usd": 315,
+     "price_rub": 28350
+    }
+   ],
+   "size_preview": "/images/products/bakery.webp",
+   "price_usd": 210,
+   "sale_price_usd": null,
+   "price_rub": 18900,
+   "sale_price_rub": null,
+   "width_cm": 67,
+   "height_cm": 26.8,
+   "width_in": 26.4,
+   "height_in": 10.6,
+   "price_per_10cm": 2821,
+   "price_per_in_usd": 7.95,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "barber-shop",
+   "group_id": "barber-shop",
+   "name": "Barber Shop",
+   "categories": [
+    "business"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "barber shop neon sign",
+    "business signage neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "cyan",
+   "images": [
+    "/images/products/barber-shop.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/barber-shop.webp",
+     "tube_mm": 6,
+     "width_cm": 72,
+     "height_cm": 43.2,
+     "width_in": 28.3,
+     "height_in": 17.0,
+     "power_w": 32.4,
+     "adjustment": 0,
+     "area_m2": 0.311,
+     "led_length_m": 3.24,
+     "price_usd": 235,
+     "price_rub": 21150
+    },
+    {
+     "size_preview": "/images/products/barber-shop.webp",
+     "tube_mm": 8,
+     "width_cm": 95,
+     "height_cm": 57.0,
+     "width_in": 37.4,
+     "height_in": 22.4,
+     "power_w": 42.8,
+     "adjustment": 0,
+     "area_m2": 0.5415,
+     "led_length_m": 4.27,
+     "price_usd": 350,
+     "price_rub": 31500
+    }
+   ],
+   "size_preview": "/images/products/barber-shop.webp",
+   "price_usd": 235,
+   "sale_price_usd": null,
+   "price_rub": 21150,
+   "sale_price_rub": null,
+   "width_cm": 72,
+   "height_cm": 43.2,
+   "width_in": 28.3,
+   "height_in": 17.0,
+   "price_per_10cm": 2938,
+   "price_per_in_usd": 8.3,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "tattoo",
+   "group_id": "tattoo",
+   "name": "Tattoo",
+   "categories": [
+    "business"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "tattoo neon sign",
+    "business signage neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "purple",
+   "images": [
+    "/images/products/tattoo.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/tattoo.webp",
+     "tube_mm": 6,
+     "width_cm": 77,
+     "height_cm": 30.8,
+     "width_in": 30.3,
+     "height_in": 12.1,
+     "power_w": 34.6,
+     "adjustment": 0,
+     "area_m2": 0.2372,
+     "led_length_m": 3.46,
+     "price_usd": 230,
+     "price_rub": 20700
+    },
+    {
+     "size_preview": "/images/products/tattoo.webp",
+     "tube_mm": 8,
+     "width_cm": 102,
+     "height_cm": 40.8,
+     "width_in": 40.2,
+     "height_in": 16.1,
+     "power_w": 45.9,
+     "adjustment": 0,
+     "area_m2": 0.4162,
+     "led_length_m": 4.59,
+     "price_usd": 345,
+     "price_rub": 31050
+    }
+   ],
+   "size_preview": "/images/products/tattoo.webp",
+   "price_usd": 230,
+   "sale_price_usd": null,
+   "price_rub": 20700,
+   "sale_price_rub": null,
+   "width_cm": 77,
+   "height_cm": 30.8,
+   "width_in": 30.3,
+   "height_in": 12.1,
+   "price_per_10cm": 2688,
+   "price_per_in_usd": 7.59,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "pizza",
+   "group_id": "pizza",
+   "name": "Pizza",
+   "categories": [
+    "business"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "pizza neon sign",
+    "business signage neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "red",
+   "images": [
+    "/images/products/pizza.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/pizza.webp",
+     "tube_mm": 6,
+     "width_cm": 82,
+     "height_cm": 32.8,
+     "width_in": 32.3,
+     "height_in": 12.9,
+     "power_w": 36.9,
+     "adjustment": 0,
+     "area_m2": 0.269,
+     "led_length_m": 3.69,
+     "price_usd": 240,
+     "price_rub": 21600
+    },
+    {
+     "size_preview": "/images/products/pizza.webp",
+     "tube_mm": 8,
+     "width_cm": 108,
+     "height_cm": 43.2,
+     "width_in": 42.5,
+     "height_in": 17.0,
+     "power_w": 48.6,
+     "adjustment": 0,
+     "area_m2": 0.4666,
+     "led_length_m": 4.86,
+     "price_usd": 360,
+     "price_rub": 32400
+    }
+   ],
+   "size_preview": "/images/products/pizza.webp",
+   "price_usd": 240,
+   "sale_price_usd": null,
+   "price_rub": 21600,
+   "sale_price_rub": null,
+   "width_cm": 82,
+   "height_cm": 32.8,
+   "width_in": 32.3,
+   "height_in": 12.9,
+   "price_per_10cm": 2634,
+   "price_per_in_usd": 7.43,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "beauty-salon",
+   "group_id": "beauty-salon",
+   "name": "Beauty Salon",
+   "categories": [
+    "business"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "beauty salon neon sign",
+    "business signage neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "pink",
+   "images": [
+    "/images/products/beauty-salon.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/beauty-salon.webp",
+     "tube_mm": 6,
+     "width_cm": 87,
+     "height_cm": 52.2,
+     "width_in": 34.3,
+     "height_in": 20.6,
+     "power_w": 39.1,
+     "adjustment": 0,
+     "area_m2": 0.4541,
+     "led_length_m": 3.92,
+     "price_usd": 265,
+     "price_rub": 23850
+    },
+    {
+     "size_preview": "/images/products/beauty-salon.webp",
+     "tube_mm": 8,
+     "width_cm": 115,
+     "height_cm": 69.0,
+     "width_in": 45.3,
+     "height_in": 27.2,
+     "power_w": 51.8,
+     "adjustment": 0,
+     "area_m2": 0.7935,
+     "led_length_m": 5.17,
+     "price_usd": 400,
+     "price_rub": 36000
+    }
+   ],
+   "size_preview": "/images/products/beauty-salon.webp",
+   "price_usd": 265,
+   "sale_price_usd": null,
+   "price_rub": 23850,
+   "sale_price_rub": null,
+   "width_cm": 87,
+   "height_cm": 52.2,
+   "width_in": 34.3,
+   "height_in": 20.6,
+   "price_per_10cm": 2741,
+   "price_per_in_usd": 7.73,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "home-sweet-home",
+   "group_id": "home-sweet-home",
+   "name": "Home Sweet Home",
+   "categories": [
+    "home"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "home sweet home neon sign",
+    "home & decor neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "orange",
+   "images": [
+    "/images/products/home-sweet-home.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/home-sweet-home.webp",
+     "tube_mm": 6,
+     "width_cm": 92,
+     "height_cm": 55.2,
+     "width_in": 36.2,
+     "height_in": 21.7,
+     "power_w": 41.4,
+     "adjustment": 0,
+     "area_m2": 0.5078,
+     "led_length_m": 4.14,
+     "price_usd": 275,
+     "price_rub": 24750
+    },
+    {
+     "size_preview": "/images/products/home-sweet-home.webp",
+     "tube_mm": 8,
+     "width_cm": 121,
+     "height_cm": 72.6,
+     "width_in": 47.6,
+     "height_in": 28.6,
+     "power_w": 54.5,
+     "adjustment": 0,
+     "area_m2": 0.8785,
+     "led_length_m": 5.44,
+     "price_usd": 410,
+     "price_rub": 36900
+    }
+   ],
+   "size_preview": "/images/products/home-sweet-home.webp",
+   "price_usd": 275,
+   "sale_price_usd": null,
+   "price_rub": 24750,
+   "sale_price_rub": null,
+   "width_cm": 92,
+   "height_cm": 55.2,
+   "width_in": 36.2,
+   "height_in": 21.7,
+   "price_per_10cm": 2690,
+   "price_per_in_usd": 7.6,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "sweet-dreams",
+   "group_id": "sweet-dreams",
+   "name": "Sweet Dreams",
+   "categories": [
+    "home"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "sweet dreams neon sign",
+    "home & decor neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "purple",
+   "images": [
+    "/images/products/sweet-dreams.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/sweet-dreams.webp",
+     "tube_mm": 6,
+     "width_cm": 52,
+     "height_cm": 31.2,
+     "width_in": 20.5,
+     "height_in": 12.3,
+     "power_w": 23.4,
+     "adjustment": 0,
+     "area_m2": 0.1622,
+     "led_length_m": 2.34,
+     "price_usd": 195,
+     "price_rub": 17550
+    },
+    {
+     "size_preview": "/images/products/sweet-dreams.webp",
+     "tube_mm": 8,
+     "width_cm": 69,
+     "height_cm": 41.4,
+     "width_in": 27.2,
+     "height_in": 16.3,
+     "power_w": 31.1,
+     "adjustment": 0,
+     "area_m2": 0.2857,
+     "led_length_m": 3.1,
+     "price_usd": 290,
+     "price_rub": 26100
+    }
+   ],
+   "size_preview": "/images/products/sweet-dreams.webp",
+   "price_usd": 195,
+   "sale_price_usd": null,
+   "price_rub": 17550,
+   "sale_price_rub": null,
+   "width_cm": 52,
+   "height_cm": 31.2,
+   "width_in": 20.5,
+   "height_in": 12.3,
+   "price_per_10cm": 3375,
+   "price_per_in_usd": 9.51,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "but-first-coffee",
+   "group_id": "but-first-coffee",
+   "name": "But First Coffee",
+   "categories": [
+    "home"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "but first coffee neon sign",
+    "home & decor neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "yellow",
+   "images": [
+    "/images/products/but-first-coffee.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/but-first-coffee.webp",
+     "tube_mm": 6,
+     "width_cm": 57,
+     "height_cm": 34.2,
+     "width_in": 22.4,
+     "height_in": 13.5,
+     "power_w": 25.7,
+     "adjustment": 0,
+     "area_m2": 0.1949,
+     "led_length_m": 2.56,
+     "price_usd": 205,
+     "price_rub": 18450
+    },
+    {
+     "size_preview": "/images/products/but-first-coffee.webp",
+     "tube_mm": 8,
+     "width_cm": 75,
+     "height_cm": 45.0,
+     "width_in": 29.5,
+     "height_in": 17.7,
+     "power_w": 33.8,
+     "adjustment": 0,
+     "area_m2": 0.3375,
+     "led_length_m": 3.38,
+     "price_usd": 310,
+     "price_rub": 27900
+    }
+   ],
+   "size_preview": "/images/products/but-first-coffee.webp",
+   "price_usd": 205,
+   "sale_price_usd": null,
+   "price_rub": 18450,
+   "sale_price_rub": null,
+   "width_cm": 57,
+   "height_cm": 34.2,
+   "width_in": 22.4,
+   "height_in": 13.5,
+   "price_per_10cm": 3237,
+   "price_per_in_usd": 9.15,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "gather",
+   "group_id": "gather",
+   "name": "Gather",
+   "categories": [
+    "home"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "gather neon sign",
+    "home & decor neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "neutral",
+   "images": [
+    "/images/products/gather.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/gather.webp",
+     "tube_mm": 6,
+     "width_cm": 62,
+     "height_cm": 24.8,
+     "width_in": 24.4,
+     "height_in": 9.8,
+     "power_w": 27.9,
+     "adjustment": 0,
+     "area_m2": 0.1538,
+     "led_length_m": 2.79,
+     "price_usd": 200,
+     "price_rub": 18000
+    },
+    {
+     "size_preview": "/images/products/gather.webp",
+     "tube_mm": 8,
+     "width_cm": 82,
+     "height_cm": 32.8,
+     "width_in": 32.3,
+     "height_in": 12.9,
+     "power_w": 36.9,
+     "adjustment": 0,
+     "area_m2": 0.269,
+     "led_length_m": 3.69,
+     "price_usd": 300,
+     "price_rub": 27000
+    }
+   ],
+   "size_preview": "/images/products/gather.webp",
+   "price_usd": 200,
+   "sale_price_usd": null,
+   "price_rub": 18000,
+   "sale_price_rub": null,
+   "width_cm": 62,
+   "height_cm": 24.8,
+   "width_in": 24.4,
+   "height_in": 9.8,
+   "price_per_10cm": 2903,
+   "price_per_in_usd": 8.2,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "game-room",
+   "group_id": "game-room",
+   "name": "Game Room",
+   "categories": [
+    "home"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "game room neon sign",
+    "home & decor neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "green",
+   "images": [
+    "/images/products/game-room.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/game-room.webp",
+     "tube_mm": 6,
+     "width_cm": 67,
+     "height_cm": 40.2,
+     "width_in": 26.4,
+     "height_in": 15.8,
+     "power_w": 30.2,
+     "adjustment": 0,
+     "area_m2": 0.2693,
+     "led_length_m": 3.01,
+     "price_usd": 225,
+     "price_rub": 20250
+    },
+    {
+     "size_preview": "/images/products/game-room.webp",
+     "tube_mm": 8,
+     "width_cm": 88,
+     "height_cm": 52.8,
+     "width_in": 34.6,
+     "height_in": 20.8,
+     "power_w": 39.6,
+     "adjustment": 0,
+     "area_m2": 0.4646,
+     "led_length_m": 3.96,
+     "price_usd": 340,
+     "price_rub": 30600
+    }
+   ],
+   "size_preview": "/images/products/game-room.webp",
+   "price_usd": 225,
+   "sale_price_usd": null,
+   "price_rub": 20250,
+   "sale_price_rub": null,
+   "width_cm": 67,
+   "height_cm": 40.2,
+   "width_in": 26.4,
+   "height_in": 15.8,
+   "price_per_10cm": 3022,
+   "price_per_in_usd": 8.52,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "love",
+   "group_id": "love",
+   "name": "Love",
+   "categories": [
+    "home"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "love neon sign",
+    "home & decor neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "red",
+   "images": [
+    "/images/products/love.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/love.webp",
+     "tube_mm": 6,
+     "width_cm": 72,
+     "height_cm": 28.8,
+     "width_in": 28.3,
+     "height_in": 11.3,
+     "power_w": 32.4,
+     "adjustment": 0,
+     "area_m2": 0.2074,
+     "led_length_m": 3.24,
+     "price_usd": 220,
+     "price_rub": 19800
+    },
+    {
+     "size_preview": "/images/products/love.webp",
+     "tube_mm": 8,
+     "width_cm": 95,
+     "height_cm": 38.0,
+     "width_in": 37.4,
+     "height_in": 15.0,
+     "power_w": 42.8,
+     "adjustment": 0,
+     "area_m2": 0.361,
+     "led_length_m": 4.27,
+     "price_usd": 330,
+     "price_rub": 29700
+    }
+   ],
+   "size_preview": "/images/products/love.webp",
+   "price_usd": 220,
+   "sale_price_usd": null,
+   "price_rub": 19800,
+   "sale_price_rub": null,
+   "width_cm": 72,
+   "height_cm": 28.8,
+   "width_in": 28.3,
+   "height_in": 11.3,
+   "price_per_10cm": 2750,
+   "price_per_in_usd": 7.77,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "good-night",
+   "group_id": "good-night",
+   "name": "Good Night",
+   "categories": [
+    "home"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "good night neon sign",
+    "home & decor neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "blue",
+   "images": [
+    "/images/products/good-night.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/good-night.webp",
+     "tube_mm": 6,
+     "width_cm": 77,
+     "height_cm": 46.2,
+     "width_in": 30.3,
+     "height_in": 18.2,
+     "power_w": 34.6,
+     "adjustment": 0,
+     "area_m2": 0.3557,
+     "led_length_m": 3.46,
+     "price_usd": 245,
+     "price_rub": 22050
+    },
+    {
+     "size_preview": "/images/products/good-night.webp",
+     "tube_mm": 8,
+     "width_cm": 102,
+     "height_cm": 61.2,
+     "width_in": 40.2,
+     "height_in": 24.1,
+     "power_w": 45.9,
+     "adjustment": 0,
+     "area_m2": 0.6242,
+     "led_length_m": 4.59,
+     "price_usd": 370,
+     "price_rub": 33300
+    }
+   ],
+   "size_preview": "/images/products/good-night.webp",
+   "price_usd": 245,
+   "sale_price_usd": null,
+   "price_rub": 22050,
+   "sale_price_rub": null,
+   "width_cm": 77,
+   "height_cm": 46.2,
+   "width_in": 30.3,
+   "height_in": 18.2,
+   "price_per_10cm": 2864,
+   "price_per_in_usd": 8.09,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "good-vibes-only",
+   "group_id": "good-vibes-only",
+   "name": "Good Vibes Only",
+   "categories": [
+    "quotes"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "good vibes only neon sign",
+    "quotes & words neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "pink",
+   "images": [
+    "/images/products/good-vibes-only.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/good-vibes-only.webp",
+     "tube_mm": 6,
+     "width_cm": 82,
+     "height_cm": 49.2,
+     "width_in": 32.3,
+     "height_in": 19.4,
+     "power_w": 36.9,
+     "adjustment": 0,
+     "area_m2": 0.4034,
+     "led_length_m": 3.69,
+     "price_usd": 255,
+     "price_rub": 22950
+    },
+    {
+     "size_preview": "/images/products/good-vibes-only.webp",
+     "tube_mm": 8,
+     "width_cm": 108,
+     "height_cm": 64.8,
+     "width_in": 42.5,
+     "height_in": 25.5,
+     "power_w": 48.6,
+     "adjustment": 0,
+     "area_m2": 0.6998,
+     "led_length_m": 4.86,
+     "price_usd": 380,
+     "price_rub": 34200
+    }
+   ],
+   "size_preview": "/images/products/good-vibes-only.webp",
+   "price_usd": 255,
+   "sale_price_usd": null,
+   "price_rub": 22950,
+   "sale_price_rub": null,
+   "width_cm": 82,
+   "height_cm": 49.2,
+   "width_in": 32.3,
+   "height_in": 19.4,
+   "price_per_10cm": 2799,
+   "price_per_in_usd": 7.89,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "live-laugh-love",
+   "group_id": "live-laugh-love",
+   "name": "Live Laugh Love",
+   "categories": [
+    "quotes"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "live laugh love neon sign",
+    "quotes & words neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "cyan",
+   "images": [
+    "/images/products/live-laugh-love.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/live-laugh-love.webp",
+     "tube_mm": 6,
+     "width_cm": 87,
+     "height_cm": 52.2,
+     "width_in": 34.3,
+     "height_in": 20.6,
+     "power_w": 39.1,
+     "adjustment": 0,
+     "area_m2": 0.4541,
+     "led_length_m": 3.92,
+     "price_usd": 265,
+     "price_rub": 23850
+    },
+    {
+     "size_preview": "/images/products/live-laugh-love.webp",
+     "tube_mm": 8,
+     "width_cm": 115,
+     "height_cm": 69.0,
+     "width_in": 45.3,
+     "height_in": 27.2,
+     "power_w": 51.8,
+     "adjustment": 0,
+     "area_m2": 0.7935,
+     "led_length_m": 5.17,
+     "price_usd": 400,
+     "price_rub": 36000
+    }
+   ],
+   "size_preview": "/images/products/live-laugh-love.webp",
+   "price_usd": 265,
+   "sale_price_usd": null,
+   "price_rub": 23850,
+   "sale_price_rub": null,
+   "width_cm": 87,
+   "height_cm": 52.2,
+   "width_in": 34.3,
+   "height_in": 20.6,
+   "price_per_10cm": 2741,
+   "price_per_in_usd": 7.73,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "dream-big",
+   "group_id": "dream-big",
+   "name": "Dream Big",
+   "categories": [
+    "quotes"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "dream big neon sign",
+    "quotes & words neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "blue",
+   "images": [
+    "/images/products/dream-big.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/dream-big.webp",
+     "tube_mm": 6,
+     "width_cm": 92,
+     "height_cm": 55.2,
+     "width_in": 36.2,
+     "height_in": 21.7,
+     "power_w": 41.4,
+     "adjustment": 0,
+     "area_m2": 0.5078,
+     "led_length_m": 4.14,
+     "price_usd": 275,
+     "price_rub": 24750
+    },
+    {
+     "size_preview": "/images/products/dream-big.webp",
+     "tube_mm": 8,
+     "width_cm": 121,
+     "height_cm": 72.6,
+     "width_in": 47.6,
+     "height_in": 28.6,
+     "power_w": 54.5,
+     "adjustment": 0,
+     "area_m2": 0.8785,
+     "led_length_m": 5.44,
+     "price_usd": 410,
+     "price_rub": 36900
+    }
+   ],
+   "size_preview": "/images/products/dream-big.webp",
+   "price_usd": 275,
+   "sale_price_usd": null,
+   "price_rub": 24750,
+   "sale_price_rub": null,
+   "width_cm": 92,
+   "height_cm": 55.2,
+   "width_in": 36.2,
+   "height_in": 21.7,
+   "price_per_10cm": 2690,
+   "price_per_in_usd": 7.6,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "stay-wild",
+   "group_id": "stay-wild",
+   "name": "Stay Wild",
+   "categories": [
+    "quotes"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "stay wild neon sign",
+    "quotes & words neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "green",
+   "images": [
+    "/images/products/stay-wild.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/stay-wild.webp",
+     "tube_mm": 6,
+     "width_cm": 52,
+     "height_cm": 31.2,
+     "width_in": 20.5,
+     "height_in": 12.3,
+     "power_w": 23.4,
+     "adjustment": 0,
+     "area_m2": 0.1622,
+     "led_length_m": 2.34,
+     "price_usd": 195,
+     "price_rub": 17550
+    },
+    {
+     "size_preview": "/images/products/stay-wild.webp",
+     "tube_mm": 8,
+     "width_cm": 69,
+     "height_cm": 41.4,
+     "width_in": 27.2,
+     "height_in": 16.3,
+     "power_w": 31.1,
+     "adjustment": 0,
+     "area_m2": 0.2857,
+     "led_length_m": 3.1,
+     "price_usd": 290,
+     "price_rub": 26100
+    }
+   ],
+   "size_preview": "/images/products/stay-wild.webp",
+   "price_usd": 195,
+   "sale_price_usd": null,
+   "price_rub": 17550,
+   "sale_price_rub": null,
+   "width_cm": 52,
+   "height_cm": 31.2,
+   "width_in": 20.5,
+   "height_in": 12.3,
+   "price_per_10cm": 3375,
+   "price_per_in_usd": 9.51,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "hello-gorgeous",
+   "group_id": "hello-gorgeous",
+   "name": "Hello Gorgeous",
+   "categories": [
+    "quotes"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "hello gorgeous neon sign",
+    "quotes & words neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "pink",
+   "images": [
+    "/images/products/hello-gorgeous.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/hello-gorgeous.webp",
+     "tube_mm": 6,
+     "width_cm": 57,
+     "height_cm": 34.2,
+     "width_in": 22.4,
+     "height_in": 13.5,
+     "power_w": 25.7,
+     "adjustment": 0,
+     "area_m2": 0.1949,
+     "led_length_m": 2.56,
+     "price_usd": 205,
+     "price_rub": 18450
+    },
+    {
+     "size_preview": "/images/products/hello-gorgeous.webp",
+     "tube_mm": 8,
+     "width_cm": 75,
+     "height_cm": 45.0,
+     "width_in": 29.5,
+     "height_in": 17.7,
+     "power_w": 33.8,
+     "adjustment": 0,
+     "area_m2": 0.3375,
+     "led_length_m": 3.38,
+     "price_usd": 310,
+     "price_rub": 27900
+    }
+   ],
+   "size_preview": "/images/products/hello-gorgeous.webp",
+   "price_usd": 205,
+   "sale_price_usd": null,
+   "price_rub": 18450,
+   "sale_price_rub": null,
+   "width_cm": 57,
+   "height_cm": 34.2,
+   "width_in": 22.4,
+   "height_in": 13.5,
+   "price_per_10cm": 3237,
+   "price_per_in_usd": 9.15,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "you-are-enough",
+   "group_id": "you-are-enough",
+   "name": "You Are Enough",
+   "categories": [
+    "quotes"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "you are enough neon sign",
+    "quotes & words neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "purple",
+   "images": [
+    "/images/products/you-are-enough.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/you-are-enough.webp",
+     "tube_mm": 6,
+     "width_cm": 62,
+     "height_cm": 37.2,
+     "width_in": 24.4,
+     "height_in": 14.6,
+     "power_w": 27.9,
+     "adjustment": 0,
+     "area_m2": 0.2306,
+     "led_length_m": 2.79,
+     "price_usd": 215,
+     "price_rub": 19350
+    },
+    {
+     "size_preview": "/images/products/you-are-enough.webp",
+     "tube_mm": 8,
+     "width_cm": 82,
+     "height_cm": 49.2,
+     "width_in": 32.3,
+     "height_in": 19.4,
+     "power_w": 36.9,
+     "adjustment": 0,
+     "area_m2": 0.4034,
+     "led_length_m": 3.69,
+     "price_usd": 320,
+     "price_rub": 28800
+    }
+   ],
+   "size_preview": "/images/products/you-are-enough.webp",
+   "price_usd": 215,
+   "sale_price_usd": null,
+   "price_rub": 19350,
+   "sale_price_rub": null,
+   "width_cm": 62,
+   "height_cm": 37.2,
+   "width_in": 24.4,
+   "height_in": 14.6,
+   "price_per_10cm": 3121,
+   "price_per_in_usd": 8.81,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "shine-bright",
+   "group_id": "shine-bright",
+   "name": "Shine Bright",
+   "categories": [
+    "quotes"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "shine bright neon sign",
+    "quotes & words neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "yellow",
+   "images": [
+    "/images/products/shine-bright.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/shine-bright.webp",
+     "tube_mm": 6,
+     "width_cm": 67,
+     "height_cm": 40.2,
+     "width_in": 26.4,
+     "height_in": 15.8,
+     "power_w": 30.2,
+     "adjustment": 0,
+     "area_m2": 0.2693,
+     "led_length_m": 3.01,
+     "price_usd": 225,
+     "price_rub": 20250
+    },
+    {
+     "size_preview": "/images/products/shine-bright.webp",
+     "tube_mm": 8,
+     "width_cm": 88,
+     "height_cm": 52.8,
+     "width_in": 34.6,
+     "height_in": 20.8,
+     "power_w": 39.6,
+     "adjustment": 0,
+     "area_m2": 0.4646,
+     "led_length_m": 3.96,
+     "price_usd": 340,
+     "price_rub": 30600
+    }
+   ],
+   "size_preview": "/images/products/shine-bright.webp",
+   "price_usd": 225,
+   "sale_price_usd": null,
+   "price_rub": 20250,
+   "sale_price_rub": null,
+   "width_cm": 67,
+   "height_cm": 40.2,
+   "width_in": 26.4,
+   "height_in": 15.8,
+   "price_per_10cm": 3022,
+   "price_per_in_usd": 8.52,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "bar-lounge",
+   "group_id": "bar-lounge",
+   "name": "Bar & Lounge",
+   "categories": [
+    "bar"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "bar & lounge neon sign",
+    "bar & events neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "pink",
+   "images": [
+    "/images/products/bar-lounge.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/bar-lounge.webp",
+     "tube_mm": 6,
+     "width_cm": 72,
+     "height_cm": 43.2,
+     "width_in": 28.3,
+     "height_in": 17.0,
+     "power_w": 32.4,
+     "adjustment": 0,
+     "area_m2": 0.311,
+     "led_length_m": 3.24,
+     "price_usd": 235,
+     "price_rub": 21150
+    },
+    {
+     "size_preview": "/images/products/bar-lounge.webp",
+     "tube_mm": 8,
+     "width_cm": 95,
+     "height_cm": 57.0,
+     "width_in": 37.4,
+     "height_in": 22.4,
+     "power_w": 42.8,
+     "adjustment": 0,
+     "area_m2": 0.5415,
+     "led_length_m": 4.27,
+     "price_usd": 350,
+     "price_rub": 31500
+    }
+   ],
+   "size_preview": "/images/products/bar-lounge.webp",
+   "price_usd": 235,
+   "sale_price_usd": null,
+   "price_rub": 21150,
+   "sale_price_rub": null,
+   "width_cm": 72,
+   "height_cm": 43.2,
+   "width_in": 28.3,
+   "height_in": 17.0,
+   "price_per_10cm": 2938,
+   "price_per_in_usd": 8.3,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "cocktails",
+   "group_id": "cocktails",
+   "name": "Cocktails",
+   "categories": [
+    "bar"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "cocktails neon sign",
+    "bar & events neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "cyan",
+   "images": [
+    "/images/products/cocktails.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/cocktails.webp",
+     "tube_mm": 6,
+     "width_cm": 77,
+     "height_cm": 30.8,
+     "width_in": 30.3,
+     "height_in": 12.1,
+     "power_w": 34.6,
+     "adjustment": 0,
+     "area_m2": 0.2372,
+     "led_length_m": 3.46,
+     "price_usd": 230,
+     "price_rub": 20700
+    },
+    {
+     "size_preview": "/images/products/cocktails.webp",
+     "tube_mm": 8,
+     "width_cm": 102,
+     "height_cm": 40.8,
+     "width_in": 40.2,
+     "height_in": 16.1,
+     "power_w": 45.9,
+     "adjustment": 0,
+     "area_m2": 0.4162,
+     "led_length_m": 4.59,
+     "price_usd": 345,
+     "price_rub": 31050
+    }
+   ],
+   "size_preview": "/images/products/cocktails.webp",
+   "price_usd": 230,
+   "sale_price_usd": null,
+   "price_rub": 20700,
+   "sale_price_rub": null,
+   "width_cm": 77,
+   "height_cm": 30.8,
+   "width_in": 30.3,
+   "height_in": 12.1,
+   "price_per_10cm": 2688,
+   "price_per_in_usd": 7.59,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "this-must-be-the-place",
+   "group_id": "this-must-be-the-place",
+   "name": "This Must Be The Place",
+   "categories": [
+    "bar"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "this must be the place neon sign",
+    "bar & events neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "green",
+   "images": [
+    "/images/products/this-must-be-the-place.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/this-must-be-the-place.webp",
+     "tube_mm": 6,
+     "width_cm": 82,
+     "height_cm": 67.2,
+     "width_in": 32.3,
+     "height_in": 26.5,
+     "power_w": 36.9,
+     "adjustment": 0,
+     "area_m2": 0.551,
+     "led_length_m": 3.69,
+     "price_usd": 270,
+     "price_rub": 24300
+    },
+    {
+     "size_preview": "/images/products/this-must-be-the-place.webp",
+     "tube_mm": 8,
+     "width_cm": 108,
+     "height_cm": 88.6,
+     "width_in": 42.5,
+     "height_in": 34.9,
+     "power_w": 48.6,
+     "adjustment": 0,
+     "area_m2": 0.9569,
+     "led_length_m": 4.86,
+     "price_usd": 405,
+     "price_rub": 36450
+    }
+   ],
+   "size_preview": "/images/products/this-must-be-the-place.webp",
+   "price_usd": 270,
+   "sale_price_usd": null,
+   "price_rub": 24300,
+   "sale_price_rub": null,
+   "width_cm": 82,
+   "height_cm": 67.2,
+   "width_in": 32.3,
+   "height_in": 26.5,
+   "price_per_10cm": 2963,
+   "price_per_in_usd": 8.36,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "happy-hour",
+   "group_id": "happy-hour",
+   "name": "Happy Hour",
+   "categories": [
+    "bar"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "happy hour neon sign",
+    "bar & events neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "yellow",
+   "images": [
+    "/images/products/happy-hour.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/happy-hour.webp",
+     "tube_mm": 6,
+     "width_cm": 87,
+     "height_cm": 52.2,
+     "width_in": 34.3,
+     "height_in": 20.6,
+     "power_w": 39.1,
+     "adjustment": 0,
+     "area_m2": 0.4541,
+     "led_length_m": 3.92,
+     "price_usd": 265,
+     "price_rub": 23850
+    },
+    {
+     "size_preview": "/images/products/happy-hour.webp",
+     "tube_mm": 8,
+     "width_cm": 115,
+     "height_cm": 69.0,
+     "width_in": 45.3,
+     "height_in": 27.2,
+     "power_w": 51.8,
+     "adjustment": 0,
+     "area_m2": 0.7935,
+     "led_length_m": 5.17,
+     "price_usd": 400,
+     "price_rub": 36000
+    }
+   ],
+   "size_preview": "/images/products/happy-hour.webp",
+   "price_usd": 265,
+   "sale_price_usd": null,
+   "price_rub": 23850,
+   "sale_price_rub": null,
+   "width_cm": 87,
+   "height_cm": 52.2,
+   "width_in": 34.3,
+   "height_in": 20.6,
+   "price_per_10cm": 2741,
+   "price_per_in_usd": 7.73,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "cheers",
+   "group_id": "cheers",
+   "name": "Cheers",
+   "categories": [
+    "bar"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "cheers neon sign",
+    "bar & events neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "orange",
+   "images": [
+    "/images/products/cheers.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/cheers.webp",
+     "tube_mm": 6,
+     "width_cm": 92,
+     "height_cm": 36.8,
+     "width_in": 36.2,
+     "height_in": 14.5,
+     "power_w": 41.4,
+     "adjustment": 0,
+     "area_m2": 0.3386,
+     "led_length_m": 4.14,
+     "price_usd": 260,
+     "price_rub": 23400
+    },
+    {
+     "size_preview": "/images/products/cheers.webp",
+     "tube_mm": 8,
+     "width_cm": 121,
+     "height_cm": 48.4,
+     "width_in": 47.6,
+     "height_in": 19.1,
+     "power_w": 54.5,
+     "adjustment": 0,
+     "area_m2": 0.5856,
+     "led_length_m": 5.44,
+     "price_usd": 390,
+     "price_rub": 35100
+    }
+   ],
+   "size_preview": "/images/products/cheers.webp",
+   "price_usd": 260,
+   "sale_price_usd": null,
+   "price_rub": 23400,
+   "sale_price_rub": null,
+   "width_cm": 92,
+   "height_cm": 36.8,
+   "width_in": 36.2,
+   "height_in": 14.5,
+   "price_per_10cm": 2543,
+   "price_per_in_usd": 7.18,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "dance-all-night",
+   "group_id": "dance-all-night",
+   "name": "Dance All Night",
+   "categories": [
+    "bar"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "dance all night neon sign",
+    "bar & events neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "purple",
+   "images": [
+    "/images/products/dance-all-night.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/dance-all-night.webp",
+     "tube_mm": 6,
+     "width_cm": 52,
+     "height_cm": 31.2,
+     "width_in": 20.5,
+     "height_in": 12.3,
+     "power_w": 23.4,
+     "adjustment": 0,
+     "area_m2": 0.1622,
+     "led_length_m": 2.34,
+     "price_usd": 195,
+     "price_rub": 17550
+    },
+    {
+     "size_preview": "/images/products/dance-all-night.webp",
+     "tube_mm": 8,
+     "width_cm": 69,
+     "height_cm": 41.4,
+     "width_in": 27.2,
+     "height_in": 16.3,
+     "power_w": 31.1,
+     "adjustment": 0,
+     "area_m2": 0.2857,
+     "led_length_m": 3.1,
+     "price_usd": 290,
+     "price_rub": 26100
+    }
+   ],
+   "size_preview": "/images/products/dance-all-night.webp",
+   "price_usd": 195,
+   "sale_price_usd": null,
+   "price_rub": 17550,
+   "sale_price_rub": null,
+   "width_cm": 52,
+   "height_cm": 31.2,
+   "width_in": 20.5,
+   "height_in": 12.3,
+   "price_per_10cm": 3375,
+   "price_per_in_usd": 9.51,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "lets-party",
+   "group_id": "lets-party",
+   "name": "Let's Party",
+   "categories": [
+    "bar"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "let's party neon sign",
+    "bar & events neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "pink",
+   "images": [
+    "/images/products/lets-party.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/lets-party.webp",
+     "tube_mm": 6,
+     "width_cm": 57,
+     "height_cm": 34.2,
+     "width_in": 22.4,
+     "height_in": 13.5,
+     "power_w": 25.7,
+     "adjustment": 0,
+     "area_m2": 0.1949,
+     "led_length_m": 2.56,
+     "price_usd": 205,
+     "price_rub": 18450
+    },
+    {
+     "size_preview": "/images/products/lets-party.webp",
+     "tube_mm": 8,
+     "width_cm": 75,
+     "height_cm": 45.0,
+     "width_in": 29.5,
+     "height_in": 17.7,
+     "power_w": 33.8,
+     "adjustment": 0,
+     "area_m2": 0.3375,
+     "led_length_m": 3.38,
+     "price_usd": 310,
+     "price_rub": 27900
+    }
+   ],
+   "size_preview": "/images/products/lets-party.webp",
+   "price_usd": 205,
+   "sale_price_usd": null,
+   "price_rub": 18450,
+   "sale_price_rub": null,
+   "width_cm": 57,
+   "height_cm": 34.2,
+   "width_in": 22.4,
+   "height_in": 13.5,
+   "price_per_10cm": 3237,
+   "price_per_in_usd": 9.15,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "custom-pet-portrait",
+   "group_id": "custom-pet-portrait",
+   "name": "Custom Pet Portrait",
+   "categories": [
+    "custom"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "custom pet portrait neon sign",
+    "custom & logo neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "cyan",
+   "images": [
+    "/images/products/custom-pet-portrait.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/custom-pet-portrait.webp",
+     "tube_mm": 6,
+     "width_cm": 62,
+     "height_cm": 37.2,
+     "width_in": 24.4,
+     "height_in": 14.6,
+     "power_w": 27.9,
+     "adjustment": 0,
+     "area_m2": 0.2306,
+     "led_length_m": 2.79,
+     "price_usd": 215,
+     "price_rub": 19350
+    },
+    {
+     "size_preview": "/images/products/custom-pet-portrait.webp",
+     "tube_mm": 8,
+     "width_cm": 82,
+     "height_cm": 49.2,
+     "width_in": 32.3,
+     "height_in": 19.4,
+     "power_w": 36.9,
+     "adjustment": 0,
+     "area_m2": 0.4034,
+     "led_length_m": 3.69,
+     "price_usd": 320,
+     "price_rub": 28800
+    }
+   ],
+   "size_preview": "/images/products/custom-pet-portrait.webp",
+   "price_usd": 215,
+   "sale_price_usd": null,
+   "price_rub": 19350,
+   "sale_price_rub": null,
+   "width_cm": 62,
+   "height_cm": 37.2,
+   "width_in": 24.4,
+   "height_in": 14.6,
+   "price_per_10cm": 3121,
+   "price_per_in_usd": 8.81,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "your-name-here",
+   "group_id": "your-name-here",
+   "name": "Your Name Here",
+   "categories": [
+    "custom"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "your name here neon sign",
+    "custom & logo neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "pink",
+   "images": [
+    "/images/products/your-name-here.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/your-name-here.webp",
+     "tube_mm": 6,
+     "width_cm": 67,
+     "height_cm": 40.2,
+     "width_in": 26.4,
+     "height_in": 15.8,
+     "power_w": 30.2,
+     "adjustment": 0,
+     "area_m2": 0.2693,
+     "led_length_m": 3.01,
+     "price_usd": 225,
+     "price_rub": 20250
+    },
+    {
+     "size_preview": "/images/products/your-name-here.webp",
+     "tube_mm": 8,
+     "width_cm": 88,
+     "height_cm": 52.8,
+     "width_in": 34.6,
+     "height_in": 20.8,
+     "power_w": 39.6,
+     "adjustment": 0,
+     "area_m2": 0.4646,
+     "led_length_m": 3.96,
+     "price_usd": 340,
+     "price_rub": 30600
+    }
+   ],
+   "size_preview": "/images/products/your-name-here.webp",
+   "price_usd": 225,
+   "sale_price_usd": null,
+   "price_rub": 20250,
+   "sale_price_rub": null,
+   "width_cm": 67,
+   "height_cm": 40.2,
+   "width_in": 26.4,
+   "height_in": 15.8,
+   "price_per_10cm": 3022,
+   "price_per_in_usd": 8.52,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "your-logo-here",
+   "group_id": "your-logo-here",
+   "name": "Your Logo Here",
+   "categories": [
+    "custom"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "your logo here neon sign",
+    "custom & logo neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "white",
+   "images": [
+    "/images/products/your-logo-here.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/your-logo-here.webp",
+     "tube_mm": 6,
+     "width_cm": 72,
+     "height_cm": 43.2,
+     "width_in": 28.3,
+     "height_in": 17.0,
+     "power_w": 32.4,
+     "adjustment": 0,
+     "area_m2": 0.311,
+     "led_length_m": 3.24,
+     "price_usd": 235,
+     "price_rub": 21150
+    },
+    {
+     "size_preview": "/images/products/your-logo-here.webp",
+     "tube_mm": 8,
+     "width_cm": 95,
+     "height_cm": 57.0,
+     "width_in": 37.4,
+     "height_in": 22.4,
+     "power_w": 42.8,
+     "adjustment": 0,
+     "area_m2": 0.5415,
+     "led_length_m": 4.27,
+     "price_usd": 350,
+     "price_rub": 31500
+    }
+   ],
+   "size_preview": "/images/products/your-logo-here.webp",
+   "price_usd": 235,
+   "sale_price_usd": null,
+   "price_rub": 21150,
+   "sale_price_rub": null,
+   "width_cm": 72,
+   "height_cm": 43.2,
+   "width_in": 28.3,
+   "height_in": 17.0,
+   "price_per_10cm": 2938,
+   "price_per_in_usd": 8.3,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "mr-and-mrs",
+   "group_id": "mr-and-mrs",
+   "name": "Mr & Mrs",
+   "categories": [
+    "custom"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "mr & mrs neon sign",
+    "custom & logo neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "white",
+   "images": [
+    "/images/products/mr-and-mrs.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/mr-and-mrs.webp",
+     "tube_mm": 6,
+     "width_cm": 77,
+     "height_cm": 46.2,
+     "width_in": 30.3,
+     "height_in": 18.2,
+     "power_w": 34.6,
+     "adjustment": 0,
+     "area_m2": 0.3557,
+     "led_length_m": 3.46,
+     "price_usd": 245,
+     "price_rub": 22050
+    },
+    {
+     "size_preview": "/images/products/mr-and-mrs.webp",
+     "tube_mm": 8,
+     "width_cm": 102,
+     "height_cm": 61.2,
+     "width_in": 40.2,
+     "height_in": 24.1,
+     "power_w": 45.9,
+     "adjustment": 0,
+     "area_m2": 0.6242,
+     "led_length_m": 4.59,
+     "price_usd": 370,
+     "price_rub": 33300
+    }
+   ],
+   "size_preview": "/images/products/mr-and-mrs.webp",
+   "price_usd": 245,
+   "sale_price_usd": null,
+   "price_rub": 22050,
+   "sale_price_rub": null,
+   "width_cm": 77,
+   "height_cm": 46.2,
+   "width_in": 30.3,
+   "height_in": 18.2,
+   "price_per_10cm": 2864,
+   "price_per_in_usd": 8.09,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "brand-mark",
+   "group_id": "brand-mark",
+   "name": "Brand Mark",
+   "categories": [
+    "custom"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "brand mark neon sign",
+    "custom & logo neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "orange",
+   "images": [
+    "/images/products/brand-mark.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/brand-mark.webp",
+     "tube_mm": 6,
+     "width_cm": 82,
+     "height_cm": 49.2,
+     "width_in": 32.3,
+     "height_in": 19.4,
+     "power_w": 36.9,
+     "adjustment": 0,
+     "area_m2": 0.4034,
+     "led_length_m": 3.69,
+     "price_usd": 255,
+     "price_rub": 22950
+    },
+    {
+     "size_preview": "/images/products/brand-mark.webp",
+     "tube_mm": 8,
+     "width_cm": 108,
+     "height_cm": 64.8,
+     "width_in": 42.5,
+     "height_in": 25.5,
+     "power_w": 48.6,
+     "adjustment": 0,
+     "area_m2": 0.6998,
+     "led_length_m": 4.86,
+     "price_usd": 380,
+     "price_rub": 34200
+    }
+   ],
+   "size_preview": "/images/products/brand-mark.webp",
+   "price_usd": 255,
+   "sale_price_usd": null,
+   "price_rub": 22950,
+   "sale_price_rub": null,
+   "width_cm": 82,
+   "height_cm": 49.2,
+   "width_in": 32.3,
+   "height_in": 19.4,
+   "price_per_10cm": 2799,
+   "price_per_in_usd": 7.89,
+   "otsu_threshold": 157
+  },
+  {
+   "slug": "your-words-here",
+   "group_id": "your-words-here",
+   "name": "Your Words Here",
+   "categories": [
+    "custom"
+   ],
+   "for_whom": [],
+   "sale_percent": 0,
+   "keywords": [
+    "your words here neon sign",
+    "custom & logo neon sign",
+    "led neon sign",
+    "custom neon sign"
+   ],
+   "color": "purple",
+   "images": [
+    "/images/products/your-words-here.webp"
+   ],
+   "sizes_json": [
+    {
+     "size_preview": "/images/products/your-words-here.webp",
+     "tube_mm": 6,
+     "width_cm": 87,
+     "height_cm": 52.2,
+     "width_in": 34.3,
+     "height_in": 20.6,
+     "power_w": 39.1,
+     "adjustment": 0,
+     "area_m2": 0.4541,
+     "led_length_m": 3.92,
+     "price_usd": 265,
+     "price_rub": 23850
+    },
+    {
+     "size_preview": "/images/products/your-words-here.webp",
+     "tube_mm": 8,
+     "width_cm": 115,
+     "height_cm": 69.0,
+     "width_in": 45.3,
+     "height_in": 27.2,
+     "power_w": 51.8,
+     "adjustment": 0,
+     "area_m2": 0.7935,
+     "led_length_m": 5.17,
+     "price_usd": 400,
+     "price_rub": 36000
+    }
+   ],
+   "size_preview": "/images/products/your-words-here.webp",
+   "price_usd": 265,
+   "sale_price_usd": null,
+   "price_rub": 23850,
+   "sale_price_rub": null,
+   "width_cm": 87,
+   "height_cm": 52.2,
+   "width_in": 34.3,
+   "height_in": 20.6,
+   "price_per_10cm": 2741,
+   "price_per_in_usd": 7.73,
+   "otsu_threshold": 157
+  }
+ ]
+}
